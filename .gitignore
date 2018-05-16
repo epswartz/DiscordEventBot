@@ -10,3 +10,8 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+### Above here was generated automatically by GitHub, below is stuff I added. - Ethan
+
+# Config File for EventBot
+config.json
