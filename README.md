@@ -1,7 +1,7 @@
 # DiscordEventBot
-A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will post reminders about the event via discord, and via SMS if you have one registered with the bot.
+![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `Current Status: Useless WIP`
 
-![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `Current Status: WIP`
+A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will post reminders about the event via discord, and via SMS if you have one registered with the bot.
 
 # Features
 The bot features some commands which are available to everyone, some commands which are available only to the event creator and the server admins, and some passive features which aren't commands at all (like reminders an hour before start).
