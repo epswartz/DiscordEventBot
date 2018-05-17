@@ -12,9 +12,11 @@
 
 package main
 
-import ("flag"
+import ("./commands"
+        "flag"
         "os"
         "os/signal"
+        "strings"
         "syscall"
         "github.com/tkanos/gonfig"
         "github.com/fatih/color"
@@ -33,9 +35,40 @@ var configFilePath = flag.String("config", "./config.json", "Configuration file 
 // Have to define a config type for gonfig to hold our config properties.
 type Config struct {
     Token    string // The auth token for connecting to discord.
+    Triggers []string // Slice of command triggers.
 }
 
-// Main message handler. Called for every message that the bot sees, in any channel it has access to.
+// Config object needs to be global, so go ahead and declare it
+var config = Config{}
+
+// Returns error message for a bad command that the user tried to use
+func invalidCommand(badCmd string) string {
+    return("`" + badCmd + "` is not a valid command. Use `" + config.Triggers[0] + " help` for more information." )
+}
+
+// Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
+// Returns the response to be printed out in the chat.
+func handleCommand(tokens []string) string {
+
+    // If there's no command, just print the help.
+    if len(tokens) == 0 {
+        return commands.Help(nil)
+    }
+
+    args := tokens[1:len(tokens)] // Remaining tokens. Command will get these. Guaranteed not empty by my previous if statement.
+
+    // Now we go through our list of commands. when we find it, pass the rest of the tokens as the command's args.
+    // Try to keep this in alphabetical order - it'll help
+    switch tokens[0] {
+        case "help":
+            return commands.Help(args)
+        case "status":
+            return commands.Status(args)
+    }
+    return invalidCommand(tokens[0]) // Print err message if command not defined
+}
+
+// Main message handler. Called for every message that the bot sees, in any channel it has access to. returns the
 func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     // Ignore all messages created by the bot itself
@@ -43,10 +76,25 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
         return
     }
 
-    // Status update
-    if m.Content == "!e status" {
-        s.ChannelMessageSend(m.ChannelID, "**EventBot is running.**")
+    // The entire thing is case insensitive.
+    content := strings.ToLower(m.Content)
+
+    // First split the string by whitespace.
+    tokens := strings.Fields(content)
+
+    doCommand := false // For tracking whether we are doing anything with this message.
+    for _, trigger := range config.Triggers { // see if the first token is a command trigger, meaning that it's meant for the bot
+        if trigger == tokens[0] {
+            doCommand = true
+            break
+        }
     }
+    if !doCommand { // If we didn't see the command trigger then we're done, this message isn't a command.
+        return
+    }
+
+    // From here, we pass the remaining tokens to a command handler which sorts out what command (if any) they are, and executes.
+    s.ChannelMessageSend(m.ChannelID, handleCommand(tokens[1:len(tokens)]))
 
     // TODO look for a command trigger (set in config file, defaults are "!event" and "!e")
     // TODO if command trigger found, send to other functions based on a list of mappings from command name to handler.
@@ -63,7 +111,6 @@ func main() {
 
     // Read the config file.
     log.Notice("Attempting to load config file: ", *configFilePath)
-    config := Config{}
     err := gonfig.GetConf(*configFilePath, &config)
     if err != nil { // Check for stinkies
         log.Critical("Error reading config file: ", err)
