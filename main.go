@@ -43,7 +43,7 @@ var config = Config{}
 
 // Returns error message for a bad command that the user tried to use
 func invalidCommand(badCmd string) string {
-    return("`" + badCmd + "` is not a valid command. Use `" + config.Triggers[0] + " help` for more information." )
+    return("`" + config.Triggers[0] + " " + badCmd + "` is not a valid command. Use `" + config.Triggers[0] + " help` for more information." )
 }
 
 // Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
