@@ -13,7 +13,7 @@
 package main
 
 import (
-	"github.com/epswartz/DiscordEventBot/pkg/commands"
+	"DiscordEventBot/commands"
 	"flag"
 	"github.com/bwmarrin/discordgo"
 	"github.com/fatih/color"
