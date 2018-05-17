@@ -50,7 +50,7 @@ func invalidCommand(badCmd string) string {
 
 // Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
 // Returns the response to be printed out in the chat.
-func handleCommand(tokens []string) string {
+func handleCommand(sender string, tokens []string) string {
 
 	// If there's no command, just print the help.
 	if len(tokens) == 0 {
@@ -59,13 +59,29 @@ func handleCommand(tokens []string) string {
 
 	args := tokens[1:len(tokens)] // Remaining tokens. Command will get these. Guaranteed not empty by my previous if statement.
 
-	// Now we go through our list of commands. when we find it, pass the rest of the tokens as the command's args.
+	// Now we go through our list of commands. when we find it, pass the rest of the tokens as the command's args, and if needed, the sender.
 	// Try to keep this in alphabetical order - it'll help
 	switch tokens[0] {
+	case "create":
+		return commands.Create(sender, args)
+	case "delete":
+		return commands.Delete(sender, args)
+	case "list":
+		return commands.List(args)
 	case "help":
 		return commands.Help(args)
+	case "remind":
+		return commands.Create(sender, args)
+	case "respond":
+		return commands.Respond(sender, args)
+	case "roster":
+		return commands.Roster(args)
+	case "sms":
+		return commands.Sms(sender, args)
 	case "status":
 		return commands.Status(args)
+	case "time":
+		return commands.Time(sender, args)
 	}
 	return invalidCommand(tokens[0]) // Print err message if command not defined
 }
@@ -96,6 +112,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// From here, we pass the remaining tokens to a command handler which sorts out what command (if any) they are, and executes.
+	// TODO add sender id to handleCommand call
 	s.ChannelMessageSend(m.ChannelID, handleCommand(tokens[1:len(tokens)]))
 
 	// TODO look for a command trigger (set in config file, defaults are "!event" and "!e")
