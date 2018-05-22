@@ -164,7 +164,7 @@ func main() {
 		log.Critical("Error reading config file: ", err)
 		return
 	}
-	log.Notice("Successfully loaded read config file: ", *configFilePath)
+	log.Notice("Successfully loaded config file: ", *configFilePath)
 
 	// All good programs start their log with some word art.
 	color.Cyan("  ___             _   ___      _   ")
