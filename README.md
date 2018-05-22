@@ -17,6 +17,7 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e respond <yes/no> <event name>` - Respond with your status for an event
 - `!e roster <event name>` - Get current attendees status for an event
 - `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires it having your number in general)
+- `!e sms register <name> <Phone Number (XXX-XXX-XXXX)>` - Register for SMS notifications (highly recommend doing in PM with bot)
 - `!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection.
 
 
