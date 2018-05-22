@@ -73,6 +73,8 @@ func handleCommand(sender string, tokens []string) string {
 		return commands.List(args)
 	case "help":
 		return commands.Help(args)
+	case "register":
+		return commands.Register(args)
 	case "remind":
 		return commands.Remind(sender, args)
 	case "respond":
@@ -190,7 +192,6 @@ func main() {
 		return
 	}
 	log.Info("EventBot successfully connected to Discord")
-	log.Info(logging.ERROR)
 
 	// Start up the other part of the bot - the part that monitors for when events start and puts out reeminders
 	go startEventNotifier()
