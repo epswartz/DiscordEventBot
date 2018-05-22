@@ -23,6 +23,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 )
 
 var log = logging.MustGetLogger("DiscordEventBot") // Create logger
@@ -32,7 +33,9 @@ var format = logging.MustStringFormatter(          // Format string for the logg
 )
 
 // Define cmd line options and read them in
-var configFilePath = flag.String("config", "./config.json", "Configuration file for bot")
+var configFilePath = flag.String("c", "./config.json", "Configuration file for bot") // -c example.json
+// var verboseLogging = flag.Bool("v", false, "Use for more verbose logging") // -v to turn on debug logLevel
+
 
 // Have to define a config type for gonfig to hold our config properties.
 type Config struct {
@@ -71,7 +74,7 @@ func handleCommand(sender string, tokens []string) string {
 	case "help":
 		return commands.Help(args)
 	case "remind":
-		return commands.Create(sender, args)
+		return commands.Remind(sender, args)
 	case "respond":
 		return commands.Respond(sender, args)
 	case "roster":
@@ -79,7 +82,7 @@ func handleCommand(sender string, tokens []string) string {
 	case "sms":
 		return commands.Sms(sender, args)
 	case "status":
-		return commands.Status(args)
+		return commands.Status() // Status needs no args. :)
 	case "time":
 		return commands.Time(sender, args)
 	}
@@ -113,10 +116,27 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// From here, we pass the remaining tokens to a command handler which sorts out what command (if any) they are, and executes.
 	// TODO add sender id to handleCommand call
-	s.ChannelMessageSend(m.ChannelID, handleCommand(tokens[1:len(tokens)]))
+	s.ChannelMessageSend(m.ChannelID, handleCommand(m.Author.ID, tokens[1:len(tokens)]))
 
 	// TODO look for a command trigger (set in config file, defaults are "!event" and "!e")
 	// TODO if command trigger found, send to other functions based on a list of mappings from command name to handler.
+}
+
+
+// TODO
+func checkEvents() {
+	log.Debug("Checking for events")
+}
+
+// Starts up the event notifier. A function which fires every minute on the minute checking for events for which reminders and things need to be sent out.
+func startEventNotifier() {
+	log.Notice("EventBot notification watcher started")
+	for {
+	    nextTime := time.Now().Truncate(time.Minute)
+	    nextTime = nextTime.Add(time.Minute)
+	    time.Sleep(time.Until(nextTime))
+	    checkEvents()
+	}
 }
 
 func main() {
@@ -124,9 +144,18 @@ func main() {
 	flag.Parse() // Parse args
 
 	// Initialize the logger's backend so it has somewhere to send messages.
-	loggingBackend := logging.NewLogBackend(os.Stdout, "", 0)                      // I personally just send everything to stdout.
-	loggingBackendFormatter := logging.NewBackendFormatter(loggingBackend, format) // Format using the string we made earlier.
-	logging.SetBackend(loggingBackendFormatter)                                    // Set the backends to be used by the logger.
+	loggingBck := logging.NewLogBackend(os.Stdout, "", 0)                      // I personally just send everything to stdout.
+	/*
+	loggingBackend := logging.AddModuleLevel(loggingBck) // Add leveling so I can get allow people to get hide/show debug msgs
+	if(*verboseLogging){
+		loggingBackend.SetLevel(logging.DEBUG, "") // Debug is the lowest for this library. With this on we go all the way down.
+	}else{
+	}
+	*/
+
+	loggingBackendFormatter := logging.NewBackendFormatter(loggingBck, format) // Format using the string we made earlier.
+
+	logging.SetBackend(loggingBackendFormatter) // Set the backends to be used by the logger.
 
 	// Read the config file.
 	log.Notice("Attempting to load config file: ", *configFilePath)
@@ -161,6 +190,10 @@ func main() {
 		return
 	}
 	log.Info("EventBot successfully connected to Discord")
+	log.Info(logging.ERROR)
+
+	// Start up the other part of the bot - the part that monitors for when events start and puts out reeminders
+	go startEventNotifier()
 
 	// Wait here until CTRL-C or other term signal is received.
 	// Full disclosure I know nothing about channels as this is my first time using Go
