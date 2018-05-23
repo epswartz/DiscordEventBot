@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Creates a new event.

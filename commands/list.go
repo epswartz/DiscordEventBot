@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Lists events for this server.

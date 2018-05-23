@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Turns SMS notifications on or off for a user.

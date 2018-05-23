@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Help gives help on the specific command given to it, or it can just print out all of them.

@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Lists the people who have responded yes or no to an event.

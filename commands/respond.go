@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Responds yes or no to an event.

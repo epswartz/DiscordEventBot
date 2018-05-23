@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Sends a reminder to everyone signed up for an event.

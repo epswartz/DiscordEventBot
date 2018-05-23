@@ -1,5 +1,3 @@
-// Returns help for bot commands.
-
 package commands
 
 // Deletes an event.
