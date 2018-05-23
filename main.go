@@ -74,7 +74,7 @@ func handleCommand(sender string, tokens []string) string {
 	case "help":
 		return commands.Help(args)
 	case "register":
-		return commands.Register(args)
+		return commands.Register(sender, args)
 	case "remind":
 		return commands.Remind(sender, args)
 	case "respond":
