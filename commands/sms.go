@@ -1,25 +1,13 @@
 package commands
 
-/*
-// Define several types so that we can work with the SMS doc in cloudant
-type SMSDocument struct{
-	doctype string
-	Contacts
-}
-
-type Contacts struct {
-	contacts []Contact
-}
-
-type Contact struct {
-	id string
-	number string
-	enabled bool
-}
-*/
+import(
+	"DiscordEventBot/db"
+)
 
 // Turns SMS notifications on or off for a user.
 func Sms(sender string, args []string) string {
+
+	db.Wack()
 
 	usageString := "**Usage:** `!e sms <on/off>`\nUse `!e help sms` for more information."
 
