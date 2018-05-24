@@ -85,6 +85,8 @@ func handleCommand(sender string, tokens []string) string {
 		return commands.Status() // Status needs no args. :)
 	case "time":
 		return commands.Time(sender, args)
+	case "version":
+		return commands.Version()
 	}
 	return invalidCommand(tokens[0]) // Print err message if command not defined
 }
