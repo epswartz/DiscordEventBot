@@ -14,10 +14,10 @@ package main
 
 import (
 	"DiscordEventBot/commands"
+	"DiscordEventBot/log"
 	"flag"
 	"github.com/bwmarrin/discordgo"
 	"github.com/fatih/color"
-	"github.com/op/go-logging"
 	"github.com/tkanos/gonfig"
 	"os"
 	"os/signal"
@@ -26,11 +26,7 @@ import (
 	"time"
 )
 
-var log = logging.MustGetLogger("DiscordEventBot") // Create logger
-var format = logging.MustStringFormatter(          // Format string for the logger.
-	// `%{color}%{time:15:04:05.000} %{shortfunc} %{level:.4s} %{id:03x}%{color:reset} %{message}`,
-	`%{color}[%{time:2006-01-02T15:04:05}] %{level:.4s} %{id:03x} > %{color:reset} %{message} `,
-)
+
 
 // Define cmd line options and read them in
 var configFilePath = flag.String("c", "./config.json", "Configuration file for bot") // -c example.json
@@ -39,8 +35,13 @@ var configFilePath = flag.String("c", "./config.json", "Configuration file for b
 
 // Have to define a config type for gonfig to hold our config properties.
 type Config struct {
-	Token    string   // The auth token for connecting to discord.
+	Token string   // The auth token for connecting to discord.
 	Triggers []string // Slice of command triggers.
+	DBHost string
+	DBPort int
+	DBTimeout int
+	DBUser string
+	DBPass string
 }
 
 // Config object needs to be global, so go ahead and declare it
@@ -64,6 +65,7 @@ func handleCommand(sender string, tokens []string) string {
 
 	// Now we go through our list of commands. when we find it, pass the rest of the tokens as the command's args, and if needed, the sender.
 	// Try to keep this in alphabetical order - it'll help
+	// Pass the commands some subset of the sender, the args
 	switch tokens[0] {
 	case "create":
 		return commands.Create(sender, args)
@@ -144,20 +146,6 @@ func startEventNotifier() {
 func main() {
 
 	flag.Parse() // Parse args
-
-	// Initialize the logger's backend so it has somewhere to send messages.
-	loggingBck := logging.NewLogBackend(os.Stdout, "", 0)                      // I personally just send everything to stdout.
-	/*
-	loggingBackend := logging.AddModuleLevel(loggingBck) // Add leveling so I can get allow people to get hide/show debug msgs
-	if(*verboseLogging){
-		loggingBackend.SetLevel(logging.DEBUG, "") // Debug is the lowest for this library. With this on we go all the way down.
-	}else{
-	}
-	*/
-
-	loggingBackendFormatter := logging.NewBackendFormatter(loggingBck, format) // Format using the string we made earlier.
-
-	logging.SetBackend(loggingBackendFormatter) // Set the backends to be used by the logger.
 
 	// Read the config file.
 	log.Notice("Attempting to load config file: ", *configFilePath)

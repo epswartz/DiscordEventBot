@@ -1,22 +1,27 @@
 package commands
 
-import "strings"
+import (
+	"strings"
+	"strconv"
+)
 
-func argsValid(args []string) bool{
-	// TODO not sure how it would be valid.
-	return true
-}
 
-var usageString = "**Usage:** `!e help [topic (optional)]`\n" // TODO get the command trigger
 
 // Help gives help on the specific command given to it, or it can just print out all of them.
-func Help(sender string, args []string) string {
-	// If not valid args, give usage
+func Help(args []string) string {
+
+	usageString := "**Usage:** `!e help [topic (optional)]`" // TODO get the command trigger
+
+	// Function for checking argument validity.
+	argsValid := func(args []string) bool {
+		// TODO There may eventually be some way for them to be invalid.
+		return true
+	}
 	if(!argsValid(args)){
 		return usageString
 	}
 
 
 
-	return strings.Join("Args recieved: " + len(args), args, " ")
+	return ("Args recieved: " + strconv.Itoa(len(args)) + strings.Join(args, " "))
 }
