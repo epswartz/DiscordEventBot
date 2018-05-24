@@ -1,4 +1,5 @@
 // The init function here is the very first thing that runs. This package reads cmd line args and stores the config.
+// You can't use the log package in here, because it hasn't been initialized yet, because it depends on something in the config, so this one has to come first.
 
 package config
 
@@ -6,6 +7,7 @@ import 	(
 	"github.com/tkanos/gonfig"
 	"flag"
 	"fmt"
+	"os"
 )
 
 // Define a config type for gonfig to hold our config properties.
@@ -35,8 +37,8 @@ func init(){
 	flag.Parse()
 	err := gonfig.GetConf(*FilePath, &Cfg)
 	if err != nil { // Check for stinkies
-		fmt.Println("Error reading config file: ", err)
-		return
+		fmt.Println("Error reading config file: \n", err)
+		os.Exit(1)
 	}
 	// validateConfigFile() // TODO
 }
