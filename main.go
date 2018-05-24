@@ -15,10 +15,9 @@ package main
 import (
 	"DiscordEventBot/commands"
 	"DiscordEventBot/log"
-	"flag"
+	"DiscordEventBot/config"
 	"github.com/bwmarrin/discordgo"
 	"github.com/fatih/color"
-	"github.com/tkanos/gonfig"
 	"os"
 	"os/signal"
 	"strings"
@@ -29,27 +28,10 @@ import (
 
 
 // Define cmd line options and read them in
-var configFilePath = flag.String("c", "./config.json", "Configuration file for bot") // -c example.json
-// var verboseLogging = flag.Bool("v", false, "Use for more verbose logging") // -v to turn on debug logLevel
-
-
-// Have to define a config type for gonfig to hold our config properties.
-type Config struct {
-	Token string   // The auth token for connecting to discord.
-	Triggers []string // Slice of command triggers.
-	DBHost string
-	DBPort int
-	DBTimeout int
-	DBUser string
-	DBPass string
-}
-
-// Config object needs to be global, so go ahead and declare it
-var config = Config{}
 
 // Returns error message for a bad command that the user tried to use
 func invalidCommand(badCmd string) string {
-	return ("`" + config.Triggers[0] + " " + badCmd + "` is not a valid command. Use `" + config.Triggers[0] + " help` for more information.")
+	return ("`" + config.Cfg.Triggers[0] + " " + badCmd + "` is not a valid command. Use `" + config.Cfg.Triggers[0] + " help` for more information.")
 }
 
 // Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
@@ -108,7 +90,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	tokens := strings.Fields(content)
 
 	doCommand := false                        // For tracking whether we are doing anything with this message.
-	for _, trigger := range config.Triggers { // see if the first token is a command trigger, meaning that it's meant for the bot
+	for _, trigger := range config.Cfg.Triggers { // see if the first token is a command trigger, meaning that it's meant for the bot
 		if trigger == tokens[0] {
 			doCommand = true
 			break
@@ -145,16 +127,6 @@ func startEventNotifier() {
 
 func main() {
 
-	flag.Parse() // Parse args
-
-	// Read the config file.
-	log.Notice("Attempting to load config file: ", *configFilePath)
-	err := gonfig.GetConf(*configFilePath, &config)
-	if err != nil { // Check for stinkies
-		log.Critical("Error reading config file: ", err)
-		return
-	}
-	log.Notice("Successfully loaded config file: ", *configFilePath)
 
 	// All good programs start their log with some word art.
 	color.Cyan("  ___             _   ___      _   ")
@@ -162,9 +134,11 @@ func main() {
 	color.Cyan(" | _|\\ V / -_) ' \\  _| _ \\/ _ \\  _|")
 	color.Cyan(" |___|\\_/\\___|_||_\\__|___/\\___/\\__|")
 
+	log.Notice("Successfully loaded config file: ", *config.FilePath)
+
 	// Start Bot
 	log.Notice("EventBot attempting to start ...")
-	dg, err := discordgo.New("Bot " + config.Token) // dg is the DiscordGo object
+	dg, err := discordgo.New("Bot " + config.Cfg.Token) // dg is the DiscordGo object
 	if err != nil {                                 // Check for stinkies
 		log.Critical("Error initializing bot: ", err)
 		return

@@ -3,6 +3,7 @@
 package log
 
 import (
+	"DiscordEventBot/config"
 	"github.com/op/go-logging"
 	"os"
 )
@@ -25,4 +26,12 @@ func init(){
 	loggingBck := logging.NewLogBackend(os.Stdout, "", 0)
 	loggingBackendFormatter := logging.NewBackendFormatter(loggingBck, format) // Format using the string we made earlier.
 	logging.SetBackend(loggingBackendFormatter) // Set the backends to be used by the logger.
+
+	// If verbose logging is off we set the debug function to something lame
+	if(!config.Cfg.VerboseLogging){
+		Debug = func(a ...interface{}){
+			// Do nothing, this shuts debug up
+		}
+	}
+
 }
