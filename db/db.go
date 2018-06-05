@@ -1,59 +1,88 @@
+// This package handles all the interaction with storage for the bot.
+// Right now I'm just having it work with local files, but it will use a proper DB at some point.
+
 package db
 
 import (
-	"DiscordEventBot/config"
-	"DiscordEventBot/log"
-	"github.com/rhinoman/couchdb-go"
+	// "DiscordEventBot/config"
+	// "DiscordEventBot/log"
+	"encoding/json"
+	"io/ioutil"
+	"fmt"
 	"time"
 )
-/*
-// Define several types so that we can work with the SMS doc in cloudant
-type SMSDocument struct{
-	doctype string
-	Contacts
+
+// Settings document for SMS. A list of people, their number/provider, and whether they have it on or off.
+type SMS struct {
+	Users []SMSUser
 }
 
-type Contacts struct {
-	contacts []Contact
+
+// SMS settings for a single user
+type SMSUser struct {
+	Id string `json:"id"`
+	Server string `json:"server"`
+	Number string `json:"number"`
+	Provider string `json:"provider"`
+	Enabled bool `json:"enabled"`
 }
 
-type Contact struct {
-	id string
-	number string
-	enabled bool
-}
-*/
 
-type TestDocument struct {
-	Title string
-	Note string
+// List of admin discord ids.
+type Admins struct {
+	Ids []string `json: "ids"`
 }
 
-func Wack(){
+// Data for a single event
+type Event struct {
+	Name string `json:"name"`
+	Server string `json:"server"`
+	StartTime Time `json:"startTime"`
+	Creator string `json:""`
+	Server string `json:""`
+	Roster []EventUser `json:"roster"`
+}
+
+// A single user inside the Roster object.
+type EventUser struct {
+	Id string `json:"id"`
+	Status bool	`json:"status"`
 }
 
 func init(){
 
-	log.Notice("Connecting to DB")
-	var timeout = time.Duration(config.Cfg.DBTimeout) * time.Millisecond
-	conn, err := couchdb.NewConnection(config.Cfg.DBHost,config.Cfg.DBPort,timeout)
-	if(err != nil){
-		log.Critical("Failed to connect to couchdb", err)
-	}
-	auth := couchdb.BasicAuth{Username: config.Cfg.DBUser, Password: config.Cfg.DBPass }
-	db := conn.SelectDB(config.Cfg.DBName, &auth)
+	// TODO Check that the data directory exists and that we can read it.
 
+	// log.Notice("Connecting to DB")
 	theDoc := TestDocument{
-		Title: "My Document",
-		Note: "This is a note",
+		Id: 0,
+		Title: "ethan_birthday",
 	}
 
-	theId := "abc123" //use whatever method you like to generate a uuid
-	//The third argument here would be a revision, if you were updating an existing document
-	_ , err = db.Save(theDoc, theId, "")
-	if(err != nil){
-		log.Critical("NOPE", err)
-	}
-	//If all is well, rev should contain the revision of the newly created
-	//or updated Document
+	jsonDoc, _ := json.Marshal(theDoc)
+	ioutil.WriteFile("output.json", jsonDoc, 0664)
 }
+
+
+// TODO complete below functions. Names should explain what they do.
+
+func getEventsByTime(server string, time string){
+
+}
+
+func getEventByName(server string, name string){
+
+}
+
+func writeEventByName(server string, name string, doc Event){
+
+}
+
+func getSMS(server string, userid string){
+
+}
+
+func writeSMS(server string, userid string, doc SMS){
+
+}
+

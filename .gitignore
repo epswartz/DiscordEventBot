@@ -15,3 +15,6 @@
 
 # Config File for EventBot
 config.json
+
+# The data folder I use to store stuff data. Substituting for a proper database.
+data
