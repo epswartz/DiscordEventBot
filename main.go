@@ -36,12 +36,15 @@ func invalidCommand(badCmd string) string {
 
 // Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
 // Returns the response to be printed out in the chat.
-func handleCommand(sender string, tokens []string) string {
+func handleCommand(server string, sender string, tokens []string) string {
+
 
 	// If there's no command, just print the help.
 	if len(tokens) == 0 {
 		return commands.Help(nil)
 	}
+
+	log.Info("Attempting Command: " + tokens[0] + "\n\t issuer: " + sender + "\n\t server: " + server)
 
 	args := tokens[1:len(tokens)] // Remaining tokens. Command will get these. Guaranteed not empty by my previous if statement.
 
@@ -50,25 +53,25 @@ func handleCommand(sender string, tokens []string) string {
 	// Pass the commands some subset of the sender, the args
 	switch tokens[0] {
 	case "create":
-		return commands.Create(sender, args)
+		return commands.Create(server, sender, args)
 	case "delete":
-		return commands.Delete(sender, args)
-	case "list":
-		return commands.List(args)
+		return commands.Delete(server, sender, args)
 	case "help":
 		return commands.Help(args)
+	case "list":
+		return commands.List(server)
 	case "remind":
-		return commands.Remind(sender, args)
+		return commands.Remind(server, sender, args)
 	case "respond":
-		return commands.Respond(sender, args)
+		return commands.Respond(server, sender, args)
 	case "roster":
-		return commands.Roster(args)
+		return commands.Roster(server, args)
 	case "sms":
-		return commands.Sms(sender, args)
+		return commands.Sms(server, sender, args)
 	case "status":
-		return commands.Status() // Status needs no args. :)
+		return commands.Status()
 	case "time":
-		return commands.Time(sender, args)
+		return commands.Time(server, sender, args)
 	case "version":
 		return commands.Version()
 	}
@@ -78,8 +81,16 @@ func handleCommand(sender string, tokens []string) string {
 // Main message handler. Called for every message that the bot sees, in any channel it has access to. returns the
 func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	// Ignore all messages created by the bot itself
-	if m.Author.ID == s.State.User.ID {
+	// First thing we do is faff around in the disgordgo object hierarchy to get the server's ID
+	c, err := s.Channel(m.ChannelID)
+	if err != nil {
+		log.Critical("Error getting channel instance from message object: %s", err)
+		os.Exit(1)
+	}
+	server := c.GuildID
+
+	// Ignore all messages created by the bot itself, and ones that are DMs to the bot (that's what not having a server means)
+	if m.Author.ID == s.State.User.ID || server == "" {
 		return
 	}
 
@@ -102,7 +113,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// From here, we pass the remaining tokens to a command handler which sorts out what command (if any) they are, and executes.
 	// TODO add sender id to handleCommand call
-	s.ChannelMessageSend(m.ChannelID, handleCommand(m.Author.ID, tokens[1:len(tokens)]))
+	s.ChannelMessageSend(m.ChannelID, handleCommand(server, m.Author.ID, tokens[1:len(tokens)]))
 
 	// TODO look for a command trigger (set in config file, defaults are "!event" and "!e")
 	// TODO if command trigger found, send to other functions based on a list of mappings from command name to handler.
@@ -111,7 +122,19 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 // TODO
 func checkEvents() {
+	// e := db.GetEventsByTime("166015498469769216", "2018-06-07@14:30")
 	log.Debug("Checking for events")
+
+	// Current time to the minute
+	//currentTime := time.Now().Truncate(time.Minute)
+	//dateString := currentTime.Format("2006-01-02@15:04")
+
+	// Form time string in the same syntax as the user puts it in
+	//dateString := currentTime.Year() + "-" + currentTime.Month() + "-" + currentTime.Day() + "@" + currentTime.Hour() + ":" + currentTime.Minute()
+	//log.Debug(dateString)
+
+
+
 }
 
 // Starts up the event notifier. A function which fires every minute on the minute checking for events for which reminders and things need to be sent out.
@@ -141,7 +164,7 @@ func main() {
 	dg, err := discordgo.New("Bot " + config.Cfg.Token) // dg is the DiscordGo object
 	if err != nil {                                 // Check for stinkies
 		log.Critical("Error initializing bot: ", err)
-		return
+		os.Exit(1)
 	}
 
 	// Register callback for MessageCreate events
@@ -151,7 +174,7 @@ func main() {
 	err = dg.Open()
 	if err != nil {
 		log.Critical("Error connecting to Discord, check internet connection and token: ", err)
-		return
+		os.Exit(1)
 	}
 	log.Info("EventBot successfully connected to Discord")
 

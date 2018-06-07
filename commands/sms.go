@@ -4,7 +4,7 @@ import(
 )
 
 // Turns SMS notifications on or off for a user.
-func Sms(sender string, args []string) string {
+func Sms(server string, sender string, args []string) string {
 
 
 	usageString := "**Usage:** `!e sms <on/off>`\nUse `!e help sms` for more information."

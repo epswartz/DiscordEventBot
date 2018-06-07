@@ -23,5 +23,5 @@ func Help(args []string) string {
 
 
 
-	return ("Args recieved: " + strconv.Itoa(len(args)) + strings.Join(args, " "))
+	return ("Args recieved: " + strconv.Itoa(len(args)) + "\n" + strings.Join(args, " "))
 }

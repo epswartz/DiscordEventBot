@@ -1,7 +1,14 @@
 package commands
 
+import "DiscordEventBot/db"
+
 // Lists events for this server.
-func List(args []string) string {
-	// TODO check if args is nil
-	return ":x: **This function not yet implemented.**"
+func List(server string) string {
+	events := db.GetAllServerEvents(server)
+
+	ret := ""
+	for _, e := range events {
+		ret += "**" + e.Name + "** - " + e.StartTime + "\n"
+    }
+	return ret
 }
