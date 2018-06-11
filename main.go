@@ -38,7 +38,6 @@ func invalidCommand(badCmd string) string {
 // Returns the response to be printed out in the chat.
 func handleCommand(server string, sender string, tokens []string) string {
 
-
 	// If there's no command, just print the help.
 	if len(tokens) == 0 {
 		return commands.Help(nil)
