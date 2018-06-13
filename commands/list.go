@@ -2,7 +2,6 @@ package commands
 
 import (
 	"DiscordEventBot/db"
-	"DiscordEventBot/log"
 )
 
 // Lists events for this server.

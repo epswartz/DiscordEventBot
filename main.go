@@ -182,6 +182,7 @@ func main() {
 		os.Exit(1)
 	}
 
+
 	// Register callback for MessageCreate events
 	dg.AddHandler(handleMessage)
 

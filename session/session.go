@@ -12,9 +12,11 @@ var Session *discordgo.Session
 
 // An alias for discordgo.New which saves what we get back.
 func New(initString string) (*discordgo.Session, error){
-	Session, err := discordgo.New(initString)
+	var err error
+	Session, err = discordgo.New(initString)
 	if(err != nil){
 		return Session, err
 	}
 	return Session, nil
 }
+
