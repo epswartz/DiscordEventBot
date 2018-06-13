@@ -16,6 +16,7 @@ import (
 	"DiscordEventBot/commands"
 	"DiscordEventBot/log"
 	"DiscordEventBot/config"
+	"DiscordEventBot/session"
 	"github.com/bwmarrin/discordgo"
 	"github.com/fatih/color"
 	"os"
@@ -24,10 +25,6 @@ import (
 	"syscall"
 	"time"
 )
-
-
-
-// Define cmd line options and read them in
 
 // Returns error message for a bad command that the user tried to use
 func invalidCommand(badCmd string) string {
@@ -169,7 +166,6 @@ func startEventNotifier() {
 
 func main() {
 
-
 	// All good programs start their log with some word art.
 	color.Cyan("  ___             _   ___      _   ")
 	color.Cyan(" | __|_ _____ _ _| |_| _ ) ___| |_ ")
@@ -180,7 +176,7 @@ func main() {
 
 	// Start Bot
 	log.Notice("EventBot attempting to start ...")
-	dg, err := discordgo.New("Bot " + config.Cfg.Token) // dg is the DiscordGo object
+	dg, err := session.New("Bot " + config.Cfg.Token) // dg is the DiscordGo object
 	if err != nil {                                 // Check for stinkies
 		log.Critical("Error initializing bot: ", err)
 		os.Exit(1)
