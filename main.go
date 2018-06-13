@@ -34,13 +34,18 @@ func invalidCommand(badCmd string) string {
 	return ("`" + config.Cfg.Triggers[0] + " " + badCmd + "` is not a valid command. Use `" + config.Cfg.Triggers[0] + " help` for more information.")
 }
 
+func handleError(e error) string {
+	log.Error(e)
+	return "Internal Error. Check log or contact @Exnur#0001 for assistance."
+}
+
 // Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
 // Returns the response to be printed out in the chat.
 func handleCommand(server string, sender string, tokens []string) string {
 
 	// If there's no command, just print the help.
 	if len(tokens) == 0 {
-		return commands.Help(nil)
+		msg,err:= commands.Help(nil), nil
 	}
 
 	log.Info("Attempting Command: " + tokens[0] + "\n\t issuer: " + sender + "\n\t server: " + server)
@@ -52,29 +57,36 @@ func handleCommand(server string, sender string, tokens []string) string {
 	// Pass the commands some subset of the sender, the args
 	switch tokens[0] {
 	case "create":
-		return commands.Create(server, sender, args)
+		msg, err := commands.Create(server, sender, args)
 	case "delete":
-		return commands.Delete(server, sender, args)
+		msg, err := commands.Delete(server, sender, args)
 	case "help":
-		return commands.Help(args)
+		msg, err := commands.Help(args)
 	case "list":
-		return commands.List(server)
+		msg, err := commands.List(server)
 	case "remind":
-		return commands.Remind(server, sender, args)
+		msg, err := commands.Remind(server, sender, args)
 	case "respond":
-		return commands.Respond(server, sender, args)
+		msg, err := commands.Respond(server, sender, args)
 	case "roster":
-		return commands.Roster(server, args)
+		msg, err := commands.Roster(server, args)
 	case "sms":
-		return commands.Sms(server, sender, args)
+		msg, err := commands.Sms(server, sender, args)
 	case "status":
-		return commands.Status()
+		msg, err := commands.Status()
 	case "time":
-		return commands.Time(server, sender, args)
+		msg, err := commands.Time(server, sender, args)
 	case "version":
-		return commands.Version()
+		msg, err := commands.Version()
+	default:
+		return invalidCommand(tokens[0]) // Print err message if command not defined
 	}
-	return invalidCommand(tokens[0]) // Print err message if command not defined
+
+	if(err != nil){
+		return msg
+	}else{
+		return handleError(err)
+	}
 }
 
 // Main message handler. Called for every message that the bot sees, in any channel it has access to. returns the

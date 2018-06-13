@@ -4,7 +4,7 @@ import(
 )
 
 // Turns SMS notifications on or off for a user.
-func Sms(server string, sender string, args []string) string {
+func Sms(server string, sender string, args []string) (string, error) {
 
 
 	usageString := "**Usage:** `!e sms <on/off>`\nUse `!e help sms` for more information."
@@ -21,13 +21,13 @@ func Sms(server string, sender string, args []string) string {
 		return true
 	}
 
-	if(!argsValid(args)){
-		return usageString;
+	if !argsValid(args) {
+		return usageString, nil
 	}
 
 	// TODO Fetch SMS doc for this server
 
 	// enable/disable user's sms
 	// Replace doc in couchdb
-	return "SMS args were valid."
+	return "SMS args were valid.", nil
 }

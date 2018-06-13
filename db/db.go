@@ -5,7 +5,6 @@ package db
 
 import (
 	// "DiscordEventBot/config"
-	"DiscordEventBot/log"
 	"encoding/json"
 	"io/ioutil"
 	"os"
@@ -45,43 +44,44 @@ type EventUser struct {
 // TODO complete below functions. Names should explain what they do.
 
 // Gets all events on all servers which begin at a given time
-func GetEventsByTime(time string) []Event {
+func GetEventsByTime(time string) ([]Event, error) {
 	var events []Event
 	dirPath := "data/servers"
 
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) { // if true then path does not exist
-		return events // return empty slice.
+		return events, nil // return empty slice.
 	}
 
 	serverDir, err := os.Open(dirPath)
 	if err != nil { // if true then path does not exist
-		log.Critical("Failed to open data directory: %s", err)
-		os.Exit(1)
-
+		return events, err
 	}
 	defer serverDir.Close()
 
 	serverDirList,_ := serverDir.Readdirnames(0) // Read all the dir names
     for _, dirName := range serverDirList {
-    	events = append(events,GetServerEventsByTime(dirName, time)...)
+    	serverEvents, err := GetServerEventsByTime(dirName, time)
+    	if err != nil {
+    		return events, err
+    	}
+    	events = append(events, serverEvents...)
     }
-    return events
+    return events, nil
 }
 
 // Gets all events on a given server which begin at a given time
-func GetServerEventsByTime(server string, time string) []Event {
+func GetServerEventsByTime(server string, time string) ([]Event, error) {
 	var events []Event
 	dirPath := "data/servers/" + server + "/events/" + time // Find the directory we need
 
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) { // if true then path does not exist
-		return events // return empty slice.
+		return events, nil // return empty slice.
 	}
 
 	// Open the directory
 	eventFiles, err := os.Open(dirPath)
 	if err != nil {
-        log.Critical("Failed to open data directory: %s", err)
-        os.Exit(1)
+        return events, err
     }
     defer eventFiles.Close()
 
@@ -90,28 +90,26 @@ func GetServerEventsByTime(server string, time string) []Event {
     	var e Event
     	rawEvent, err := ioutil.ReadFile(dirPath + "/" + fileName)
     	if err != nil {
-        	log.Critical("Failed to open event file: %s", err)
-        	os.Exit(1)
+        	return events, err
     	}
     	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
     	events = append(events, e)
     }
-    return events
+    return events, nil
 }
 
 
-func GetAllServerEvents(server string) []Event {
+func GetAllServerEvents(server string) ([]Event, error) {
 	var events []Event
 	dirPath := "data/servers/" + server + "/events"// Find the directory we need
 
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) { // if true then path does not exist
-		return events // return empty slice.
+		return events, nil // return empty slice.
 	}
 	// Open the directory
 	eventDirs, err := os.Open(dirPath)
 	if err != nil {
-        log.Critical("Failed to open data directory: %s", err)
-        os.Exit(1)
+        return events, err
     }
 	defer eventDirs.Close()
 
@@ -119,45 +117,43 @@ func GetAllServerEvents(server string) []Event {
     for _, eventDirName := range eventDirNames {
 		eventFiles, err := os.Open(dirPath + "/" + eventDirName)
 		if err != nil {
-        	log.Critical("Failed to open data directory: %s", err)
+        	return events, err
     	}
 	 	eventFileNames,_ := eventFiles.Readdirnames(0) // Read all the file names in there
     	for _, eventFileName := range eventFileNames {
     		var e Event
 	    	rawEvent, err := ioutil.ReadFile(dirPath + "/" + eventDirName + "/" + eventFileName)
 	    	if err != nil {
-	        	log.Critical("Failed to open event file: %s", err)
-	        	os.Exit(1)
+	        	return events, err
 	    	}
 	    	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
 	    	events = append(events, e)
     	}
     }
-    return events
+    return events, nil
 }
 
-func GetEventByName(server string, name string) Event {
+func GetEventByName(server string, name string) (Event, error) {
 	var e Event
 	dirPath := "data/servers/" + server + "/events"
 
 	eventDirs, err := os.Open(dirPath)
 		if err != nil {
-        	log.Critical("Failed to open data directory: %s", err)
+        	return e, err
     	}
 	 	eventDirNames,_ := eventDirs.Readdirnames(0) // Read all the file names in there
     	for _, eventDirName := range eventDirNames {
     		if _, err := os.Stat(dirPath + "/" + eventDirName + "/" + name + ".json"); err == nil { // If true, we found an event file with that name.
 		    	rawEvent, err := ioutil.ReadFile(dirPath + "/" + eventDirName + "/" + name + ".json")
 		    	if err != nil {
-		        	log.Critical("Failed to open event file: %s", err)
-		        	os.Exit(1)
+		        	return e, err
 		    	}
 		    	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
-		    	return e
+		    	return e, nil
 			}
     	}
     	// If we get to the bottom and never found the file, we are done - there was no event with that name.
-    	return e
+    	return e, nil
 }
 
 /*
