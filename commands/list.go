@@ -2,6 +2,7 @@ package commands
 
 import (
 	"DiscordEventBot/db"
+	"DiscordEventBot/log"
 )
 
 // Lists events for this server.
@@ -10,6 +11,9 @@ func List(server string) (string, error) {
 	// Currently it is impossible to have invalid args for list cmd.
 
 	events, err := db.GetAllServerEvents(server)
+	log.Warning(err)
+
+
 
 	if err != nil {
 		return "", err

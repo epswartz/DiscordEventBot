@@ -4,7 +4,7 @@
 package db
 
 import (
-	// "DiscordEventBot/config"
+	"DiscordEventBot/log"
 	"encoding/json"
 	"io/ioutil"
 	"os"
@@ -45,6 +45,7 @@ type EventUser struct {
 
 // Gets all events on all servers which begin at a given time
 func GetEventsByTime(time string) ([]Event, error) {
+	log.Debug("Getting all events at time " + time)
 	var events []Event
 	dirPath := "data/servers"
 
@@ -71,6 +72,7 @@ func GetEventsByTime(time string) ([]Event, error) {
 
 // Gets all events on a given server which begin at a given time
 func GetServerEventsByTime(server string, time string) ([]Event, error) {
+	log.Debug("Getting all events for server " + server + " at time " + time)
 	var events []Event
 	dirPath := "data/servers/" + server + "/events/" + time // Find the directory we need
 
@@ -100,6 +102,7 @@ func GetServerEventsByTime(server string, time string) ([]Event, error) {
 
 
 func GetAllServerEvents(server string) ([]Event, error) {
+	log.Debug("Getting all events for server " + server)
 	var events []Event
 	dirPath := "data/servers/" + server + "/events"// Find the directory we need
 
@@ -134,6 +137,7 @@ func GetAllServerEvents(server string) ([]Event, error) {
 }
 
 func GetEventByName(server string, name string) (Event, error) {
+	log.Debug("Getting event " + name + " on server " + server)
 	var e Event
 	dirPath := "data/servers/" + server + "/events"
 

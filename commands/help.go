@@ -21,6 +21,9 @@ func Help(args []string) (string, error) {
 		return usageString, nil
 	}
 
+	if(len(args) == 0){
+		return "No args.", nil
+	}
 
 
 	return ("Args recieved: " + strconv.Itoa(len(args)) + "\n" + strings.Join(args, " ")), nil
