@@ -30,7 +30,8 @@ type SMSUser struct {
 type Event struct {
 	Name string `json:"name"`
 	Server string `json:"server"`
-	StartTime string `json:"startTime"`
+	TimeString string `json:"timeString"`
+	Epoch string `json: "epoch"`
 	Creator string `json: "creator"`
 	Roster []EventUser `json:"roster"`
 }
@@ -160,11 +161,13 @@ func GetEventByName(server string, name string) (Event, error) {
     	return e, nil
 }
 
-/*
-func WriteEventByName(server string, name string, doc Event){
-
+// Writes event by name to the proper location, creating the file if it does not exist or updating it if it does.
+func WriteEventByName(server string, name string, doc Event) error {
+	log.Debug("Writing event " + name + " on server " + server)
+	dirPath := "data/servers/" + server + "/events"
 }
 
+/*
 func GetSMS(server string, userid string) SMSUser {
 
 }
