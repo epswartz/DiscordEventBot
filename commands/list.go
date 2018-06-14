@@ -11,7 +11,7 @@ func List(server string) (string, error) {
 
 	// Currently it is impossible to have invalid args for list cmd.
 
-	dateLayout := "Monday, January 2 2006 3:04 PM"
+	dateLayout := "Monday, January 2 2006 3:04 PM MST"
 	noDateSetString := "No time scheduled for this event."
 
 	events, err := db.GetAllServerEvents(server)
@@ -31,7 +31,11 @@ func List(server string) (string, error) {
 		        return "", err
 		    }
 		    t := time.Unix(unixTime, 0)
-		    timeString = t.Format(dateLayout)
+    	    loc, err := time.LoadLocation("EST") // TODO Obviously that string changes per the server timezone
+		    if err != nil {
+		    	return "", nil
+		    }
+		    timeString = t.In(loc).Format(dateLayout)
 		} else {
 			timeString = noDateSetString
 		}

@@ -15,7 +15,7 @@ func Get(server string, args []string) (string, error) {
 	var blank db.Event
 
 	// Formatting string for printing dates.
-	dateLayout := "Monday, January 2 2006 3:04 PM"
+	dateLayout := "Monday, January 2 2006 3:04 PM MST"
 
 	usageString := "**Usage:** `!e get <event name>`" // TODO get the command trigger
 
@@ -60,7 +60,11 @@ func Get(server string, args []string) (string, error) {
 	        return "", err
 	    }
 	    t := time.Unix(unixTime, 0)
-	    timeString = t.Format(dateLayout)
+	    loc, err := time.LoadLocation("EST") // TODO Obviously that string changes per the server timezone
+	    if err != nil {
+	    	return "", nil
+	    }
+	    timeString = t.In(loc).Format(dateLayout)
 	} else {
 		timeString = noDateSetString
 	}

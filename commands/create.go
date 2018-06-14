@@ -17,8 +17,8 @@ func Create(server string, sender string, args []string) (string, error) {
 	dateRegEx := regexp.MustCompile("^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]@[0-9][0-9]:[0-9][0-9]$")
 
 	// Different date formats because one looks good when printed and one works well in the cmd
-	dateCommandLayout := "01/02/2006@15:04"
-	datePrintLayout := "Monday, January 2 2006 3:04 PM"
+	dateCommandLayout := "01/02/2006@15:04 MST" // TODO Read the actual timezone for the server and concat it.
+	datePrintLayout := "Monday, January 2 2006 3:04 PM MST"
 
 	usageString := "**Usage:** `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]`" // TODO get the command trigger
 	incorrectDateString := "**Error:** Incorrect Date format. Use `MM/DD/YYYY@HH:MM` with 24 hour time and include any leading 0s." // Needed a more intuive err for this one.
@@ -56,11 +56,16 @@ func Create(server string, sender string, args []string) (string, error) {
 	// Fill out the event struct
 	e.Name = args[0]
 	e.Server = server
+
+	// SHITTY HACK ALERT
+	inputTime := args[1] + " EST" // TODO change timezone per server settings
+
 	var t time.Time
 	if len(args) == 2 {
 		// Find epoch.
-		t, err = time.Parse(dateCommandLayout, args[1])
-		epoch := t.UTC().Unix()
+		t, err = time.Parse(dateCommandLayout, inputTime) // TODO get actual timezone
+		epoch := t.Unix()
+		// epoch += 18000 // TODO this number depends on the server timezone. This is for EST.
 		e.Epoch = strconv.FormatInt(epoch, 10)
 	} else {
 		e.Epoch = ""
