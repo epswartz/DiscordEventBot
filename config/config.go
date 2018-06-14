@@ -12,12 +12,6 @@ import 	(
 
 // Define a config type for gonfig to hold our config properties.
 type Config struct {
-	DBHost string // Host of couchdb
-	DBName string // Name of db to use on couchdb
-	DBPass string // Pwd for couchdb
-	DBPort int // Port of couchdb
-	DBTimeout int // Timeout in ms for couchdb calls
-	DBUser string // username for couchdb
 	Token string   // The auth token for connecting to discord.
 	Triggers []string // Slice of command triggers.
 	VerboseLogging bool // enable/disable debug log level
