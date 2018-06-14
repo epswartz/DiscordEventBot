@@ -65,6 +65,8 @@ func handleCommand(server string, sender string, tokens []string) string {
 		msg, err = commands.Create(server, sender, args)
 	case "delete":
 		msg, err = commands.Delete(server, sender, args)
+	case "get":
+		msg, err = commands.Get(server, args)
 	case "help":
 		msg, err = commands.Help(args)
 	case "list":
@@ -73,8 +75,6 @@ func handleCommand(server string, sender string, tokens []string) string {
 		msg, err = commands.Remind(server, sender, args)
 	case "respond":
 		msg, err = commands.Respond(server, sender, args)
-	case "roster":
-		msg, err = commands.Roster(server, args)
 	case "settings":
 		msg, err = commands.Settings(server, sender, args)
 	case "sms":

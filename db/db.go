@@ -110,30 +110,24 @@ func GetAllServerEvents(server string) ([]Event, error) {
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) { // if true then path does not exist
 		return events, nil // return empty slice.
 	}
+
 	// Open the directory
-	eventDirs, err := os.Open(dirPath)
+	eventFiles, err := os.Open(dirPath)
 	if err != nil {
         return events, err
     }
-	defer eventDirs.Close()
+    defer eventFiles.Close()
 
-    eventDirNames,_ := eventDirs.Readdirnames(0) // Read all the dir names in the server
-    for _, eventDirName := range eventDirNames {
-		eventFiles, err := os.Open(dirPath + "/" + eventDirName)
-		if err != nil {
+ 	eventFileNames,_ := eventFiles.Readdirnames(0) // Read all the file names in there
+	for _, eventFileName := range eventFileNames {
+		var e Event
+    	rawEvent, err := ioutil.ReadFile(dirPath + "/" + eventFileName)
+    	if err != nil {
         	return events, err
     	}
-	 	eventFileNames,_ := eventFiles.Readdirnames(0) // Read all the file names in there
-    	for _, eventFileName := range eventFileNames {
-    		var e Event
-	    	rawEvent, err := ioutil.ReadFile(dirPath + "/" + eventDirName + "/" + eventFileName)
-	    	if err != nil {
-	        	return events, err
-	    	}
-	    	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
-	    	events = append(events, e)
-    	}
-    }
+    	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
+    	events = append(events, e)
+	}
     return events, nil
 }
 
@@ -141,30 +135,24 @@ func GetEventByName(server string, name string) (Event, error) {
 	log.Debug("Getting event " + name + " on server " + server)
 	var e Event
 	dirPath := "data/servers/" + server + "/events"
-
-	eventDirs, err := os.Open(dirPath)
-		if err != nil {
+	if _, err := os.Stat(dirPath + "/" + name + ".json"); err == nil { // If true, we found an event file with that name.
+    	rawEvent, err := ioutil.ReadFile(dirPath+ "/" + name + ".json")
+    	if err != nil {
         	return e, err
     	}
-	 	eventDirNames,_ := eventDirs.Readdirnames(0) // Read all the file names in there
-    	for _, eventDirName := range eventDirNames {
-    		if _, err := os.Stat(dirPath + "/" + eventDirName + "/" + name + ".json"); err == nil { // If true, we found an event file with that name.
-		    	rawEvent, err := ioutil.ReadFile(dirPath + "/" + eventDirName + "/" + name + ".json")
-		    	if err != nil {
-		        	return e, err
-		    	}
-		    	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
-		    	return e, nil
-			}
-    	}
-    	// If we get to the bottom and never found the file, we are done - there was no event with that name.
+    	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
     	return e, nil
+	}
+	// If we get to the bottom and never found the file, we are done - there was no event with that name.
+	return e, nil
 }
 
+/*
 // Writes event by name to the proper location, creating the file if it does not exist or updating it if it does.
-func WriteEventByName(server string, name string, doc Event) error {
+func WriteEventByName(server string, name string, e Event) error {
 	log.Debug("Writing event " + name + " on server " + server)
-	dirPath := "data/servers/" + server + "/events"
+	dirPath := "data/servers/" + server + "/events/"
+	eJson, err := json.Marshal(e)
 }
 
 /*

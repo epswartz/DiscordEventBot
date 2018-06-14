@@ -16,10 +16,10 @@ The bot features some commands which are available to everyone, some commands wh
 
 ## Commands Available to Everyone
 - `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]` - Create an event
+- `!e get <event name>` - Get info for an event
 - `!e help` - Get link to instructions to use bot
 - `!e list` - List events on this server
 - `!e respond <yes/no> <event name>` - Respond with your status for an event
-- `!e roster <event name>` - Get current attendees status for an event
 - `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires it having your number in general) **Note: this feature currently unavailable on the public bot instance**
 - `!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection.
 - `!e version` - Prints information on the bot's current version.
