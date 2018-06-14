@@ -57,11 +57,14 @@ func Create(server string, sender string, args []string) (string, error) {
 	e.Name = args[0]
 	e.Server = server
 
-	// SHITTY HACK ALERT
-	inputTime := args[1] + " EST" // TODO change timezone per server settings
+
 
 	var t time.Time
+	var inputTime string
 	if len(args) == 2 {
+		// SHITTY HACK ALERT
+		inputTime = args[1] + " EST" // TODO change timezone per server settings
+
 		// Find epoch.
 		t, err = time.Parse(dateCommandLayout, inputTime) // TODO get actual timezone
 		epoch := t.Unix()
