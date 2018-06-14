@@ -149,7 +149,7 @@ func GetEventByName(server string, name string) (Event, error) {
 }
 
 
-// Writes event by name to the proper location, creating the file if it does not exist or updating it if it does.
+// Writes event to the proper location, creating the file if it does not exist or updating it if it does.
 func WriteEvent(e Event) error {
 	log.Debug("Writing event " + e.Name + " on server " + e.Server)
 	dirPath := "data/servers/" + e.Server + "/events/"
@@ -163,6 +163,23 @@ func WriteEvent(e Event) error {
 	}
 	return nil
 }
+
+
+// Delete an event
+func DeleteEvent(e Event) err {
+	log.Debug("Deleting event " + e.Name + " on server " + e.Server)
+	dirPath := "data/servers/" + e.Server + "/events/"
+	eJson, err := json.Marshal(e)
+	if err != nil {
+    	return err
+	}
+	err = ioutil.WriteFile(dirPath + e.Name + ".json", eJson, 0664)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 
 /*
 func GetSMS(server string, userid string) (SMSUser, error) {

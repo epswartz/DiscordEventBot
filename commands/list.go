@@ -20,8 +20,6 @@ func List(server string) (string, error) {
 		return "", err
 	}
 
-
-
 	ret := ""
 	for _, e := range events {
 		var timeString string
