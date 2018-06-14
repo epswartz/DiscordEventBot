@@ -30,7 +30,6 @@ type SMSUser struct {
 type Event struct {
 	Name string `json:"name"`
 	Server string `json:"server"`
-	TimeString string `json:"timeString"`
 	Epoch string `json: "epoch"`
 	Creator string `json: "creator"`
 	Roster []EventUser `json:"roster"`
@@ -75,7 +74,7 @@ func GetEventsByTime(time string) ([]Event, error) {
 func GetServerEventsByTime(server string, time string) ([]Event, error) {
 	log.Debug("Getting all events for server " + server + " at time " + time)
 	var events []Event
-	dirPath := "data/servers/" + server + "/events/" + time // Find the directory we need
+	dirPath := "data/servers/" + server + "/events/" // Find the directory we need
 
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) { // if true then path does not exist
 		return events, nil // return empty slice.
@@ -96,7 +95,9 @@ func GetServerEventsByTime(server string, time string) ([]Event, error) {
         	return events, err
     	}
     	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
-    	events = append(events, e)
+    	if e.Epoch == time { // If the event starts at the requested time
+    		events = append(events, e)
+    	}
     }
     return events, nil
 }
@@ -143,28 +144,40 @@ func GetEventByName(server string, name string) (Event, error) {
     	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
     	return e, nil
 	}
-	// If we get to the bottom and never found the file, we are done - there was no event with that name.
+	// If we never found the file, we are done - there was no event with that name.
 	return e, nil
 }
 
-/*
+
 // Writes event by name to the proper location, creating the file if it does not exist or updating it if it does.
-func WriteEventByName(server string, name string, e Event) error {
-	log.Debug("Writing event " + name + " on server " + server)
-	dirPath := "data/servers/" + server + "/events/"
+func WriteEvent(e Event) error {
+	log.Debug("Writing event " + e.Name + " on server " + e.Server)
+	dirPath := "data/servers/" + e.Server + "/events/"
 	eJson, err := json.Marshal(e)
+	if err != nil {
+    	return err
+	}
+	err = ioutil.WriteFile(dirPath + e.Name + ".json", eJson, 0664)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 /*
-func GetSMS(server string, userid string) SMSUser {
+func GetSMS(server string, userid string) (SMSUser, error) {
 
 }
 
-func WriteSMS(server string, userid string, doc SMS){
+func WriteSMS(server string, userid string, doc SMS) error {
 
 }
 
-func GetAdmins(server string) Admins {
+func GetServerSettings(server string) (ServerSettings, error) {
+
+}
+
+func WriteServerSettings(s ServerSettings) error {
 
 }
 */

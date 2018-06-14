@@ -12,7 +12,7 @@ The bot features some commands which are available to everyone, some commands wh
 
 `<>` means required parameters. For example `<event name>` could be `ethanbday`
 
-`[]` means optional parameters. For example `[optional scheduled time]` could be `05/30/2018@17:30`
+`[]` means optional parameters. For example `[optional scheduled time]` could be `05-30-2018@17:30`
 
 ## Commands Available to Everyone
 - `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]` - Create an event
@@ -20,15 +20,15 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e help` - Get link to instructions to use bot
 - `!e list` - List events on this server
 - `!e respond <yes/no> <event name>` - Respond with your status for an event
-- `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires it having your number in general) **Note: this feature currently unavailable on the public bot instance**
+- `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires it having your number in general) **Note: this feature is currently unavailable on the public bot instance**
 - `!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection.
 - `!e version` - Prints information on the bot's current version.
 
 ## Commands Available to Event Creators and Server Admins
 - `!e delete <event name>` - Delete an event
 - `!e remind <event name>` - Send a reminder for an event (in addition to the auto-reminder 1 hr before)
-- `!e settings <setting> [optional value]` - Get or Set some setting for the current server.
-- `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event
+- `!e settings [setting] [optional value]` - Get or Set some setting for the current server. just plain old `!e settings` shows them all.
+- `!e time <event name> <time (MM-DD-YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event
 
 ## Other Features
 - Reminder 1 hour before the event starts

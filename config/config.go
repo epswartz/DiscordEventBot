@@ -15,6 +15,7 @@ type Config struct {
 	Token string   // The auth token for connecting to discord.
 	Triggers []string // Slice of command triggers.
 	VerboseLogging bool // enable/disable debug log level
+	MaxEventNameLength	int // How long event names can be.
 }
 
 // in main.go, we pass a pointer to this to fill it up. then outside this package, we can get at it with config.Cfg once we import the package.

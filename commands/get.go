@@ -6,13 +6,20 @@ import(
 	"DiscordEventBot/config"
 	"strings"
 	"reflect"
+	"time"
+	"strconv"
 )
 
 // Lists the people who have responded yes or no to an event.
 func Get(server string, args []string) (string, error) {
 	var blank db.Event
 
-	usageString := "**Usage:** `!e roster <event name>`" // TODO get the command trigger
+	// Formatting string for printing dates.
+	dateLayout := "Monday, January 2 2006 3:04 PM"
+
+	usageString := "**Usage:** `!e get <event name>`" // TODO get the command trigger
+
+	noDateSetString := "No time scheduled for this event."
 
 	// Function for checking argument validity.
 	argsValid := func(args []string) bool {
@@ -31,7 +38,7 @@ func Get(server string, args []string) (string, error) {
 		return "", err
 	}
 
-	// FIXME I think this is coming back as true even when there's an event.
+	// FIXME I think this is occasionally coming back as true even when there's an event.
 	if reflect.DeepEqual(e, blank) { // TODO There's got to be a better way to figure out if there were no results.
 		return "**Error:** Event `" + args[0] + "` not found", nil
 	}
@@ -44,7 +51,20 @@ func Get(server string, args []string) (string, error) {
 
 	ret := "**Event:** `" + args[0] + "`\n"
 	ret += "**Creator:** `" + creatorData.Username + "#" + creatorData.Discriminator + "`\n"
-	ret += "**Time:** `" + e.TimeString + "`\n"
+
+	// Parse the time
+	var timeString string
+	if e.Epoch != "" {
+		unixTime, err := strconv.ParseInt(e.Epoch, 10, 64)
+	    if err != nil {
+	        return "", err
+	    }
+	    t := time.Unix(unixTime, 0)
+	    timeString = t.Format(dateLayout)
+	} else {
+		timeString = noDateSetString
+	}
+	ret += "**Time:** `" + timeString + "`\n"
 
 	if len(e.Roster) != 0 {
 		ret += "**Attendance Roster:**\n"
