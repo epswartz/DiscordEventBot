@@ -17,7 +17,7 @@ func List(server string) (string, error) {
 
 	ret := ""
 	for _, e := range events {
-		ret += "**" + e.Name + "** " + e.StartTime + "\n"
+		ret += "**" + e.Name + "** " + e.TimeString + "\n"
     }
 	return ret, nil
 }

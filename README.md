@@ -25,9 +25,9 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e version` - Prints information on the bot's current version.
 
 ## Commands Available to Event Creators and Server Admins
-- `!e timezone <timezone>` - Set the server timezone to each
 - `!e delete <event name>` - Delete an event
 - `!e remind <event name>` - Send a reminder for an event (in addition to the auto-reminder 1 hr before)
+- `!e settings <setting> [optional value]` - Get or Set some setting for the current server.
 - `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event
 
 ## Other Features

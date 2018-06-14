@@ -75,6 +75,8 @@ func handleCommand(server string, sender string, tokens []string) string {
 		msg, err = commands.Respond(server, sender, args)
 	case "roster":
 		msg, err = commands.Roster(server, args)
+	case "settings":
+		msg, err = commands.Settings(server, sender, args)
 	case "sms":
 		msg, err = commands.Sms(server, sender, args)
 	case "status":
@@ -105,7 +107,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	server := c.GuildID
 
-	// Ignore all messages created by the bot itself, and ones that are DMs to the bot (that's what not having a server means)
+	// Ignore all messages created by the bot itself, and ones that are DMs to the bot (that's what having empty string for server means)
 	if m.Author.ID == s.State.User.ID || server == "" {
 		return
 	}
