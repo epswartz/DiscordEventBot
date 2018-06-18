@@ -13,11 +13,16 @@ import(
 func Create(server string, sender string, args []string) (string, error) {
 	var blank db.Event
 
+	serverLocationString := "US/Eastern" // TODO get this from server settings.
+	serverLocation, err := time.LoadLocation(serverLocationString)
+	if err != nil {
+		return "", err
+	}
 	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
 	dateRegEx := regexp.MustCompile("^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]@[0-9][0-9]:[0-9][0-9]$")
 
 	// Different date formats because one looks good when printed and one works well in the cmd
-	dateCommandLayout := "01/02/2006@15:04 MST" // TODO Read the actual timezone for the server and concat it.
+	dateCommandLayout := "01/02/2006@15:04" // TODO Read the actual timezone for the server and concat it.
 	datePrintLayout := "Monday, January 2 2006 3:04 PM MST"
 
 	usageString := "**Usage:** `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]`" // TODO get the command trigger
@@ -62,16 +67,13 @@ func Create(server string, sender string, args []string) (string, error) {
 	var t time.Time
 	var inputTime string
 	if len(args) == 2 {
-		// SHITTY HACK ALERT
-		inputTime = args[1] + " EST" // TODO change timezone per server settings
-
 		// Find epoch.
-		t, err = time.Parse(dateCommandLayout, inputTime) // TODO get actual timezone
+		t, err = time.ParseInLocation(dateCommandLayout, args[1], serverLocation) // TODO get actual timezone
 		epoch := t.Unix()
 		// epoch += 18000 // TODO this number depends on the server timezone. This is for EST.
-		e.Epoch = strconv.FormatInt(epoch, 10)
+		e.Epoch = epoch
 	} else {
-		e.Epoch = ""
+		e.Epoch = -1
 	}
 	e.Creator = sender
 	e.Roster = []db.EventUser{} // Empty slice of EventUser

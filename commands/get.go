@@ -61,13 +61,12 @@ func Get(server string, args []string) (string, error) {
 
 	// Parse the time
 	var timeString string
-	if e.Epoch != "" {
-		unixTime, err := strconv.ParseInt(e.Epoch, 10, 64)
+	if e.Epoch != -1 {
 	    if err != nil {
 	        return "", err
 	    }
-	    t := time.Unix(unixTime, 0)
-	    loc, err := time.LoadLocation("EST") // TODO Obviously that string changes per the server timezone
+	    t := time.Unix(e.Epoch, 0)
+	    loc, err := time.LoadLocation("EDT") // TODO Obviously that string changes per the server timezone
 	    if err != nil {
 	    	return "", nil
 	    }

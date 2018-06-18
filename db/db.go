@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"strconv"
 )
 
 // Settings document for SMS. A list of people, their number/provider, and whether they have it on or off.
@@ -30,7 +31,7 @@ type SMSUser struct {
 type Event struct {
 	Name string `json:"name"`
 	Server string `json:"server"`
-	Epoch string `json: "epoch"`
+	Epoch int64 `json: "epoch"`
 	Creator string `json: "creator"`
 	Roster []EventUser `json:"roster"`
 }
@@ -44,8 +45,8 @@ type EventUser struct {
 // TODO complete below functions. Names should explain what they do.
 
 // Gets all events on all servers which begin at a given time
-func GetEventsByTime(time string) ([]Event, error) {
-	log.Debug("Getting all events at time " + time)
+func GetEventsByTime(epoch int64) ([]Event, error) {
+	log.Debug("Getting all events at time " + strconv.FormatInt(epoch, 10))
 	var events []Event
 	dirPath := "data/servers"
 
@@ -61,7 +62,7 @@ func GetEventsByTime(time string) ([]Event, error) {
 
 	serverDirList,_ := serverDir.Readdirnames(0) // Read all the dir names
     for _, dirName := range serverDirList {
-    	serverEvents, err := GetServerEventsByTime(dirName, time)
+    	serverEvents, err := GetServerEventsByTime(dirName, epoch)
     	if err != nil {
     		return events, err
     	}
@@ -71,8 +72,9 @@ func GetEventsByTime(time string) ([]Event, error) {
 }
 
 // Gets all events on a given server which begin at a given time
-func GetServerEventsByTime(server string, time string) ([]Event, error) {
-	log.Debug("Getting all events for server " + server + " at time " + time)
+// FIXME This hasn't worked since I changed the time formatting stuff, don't need it until I add reminders.
+func GetServerEventsByTime(server string, epoch int64) ([]Event, error) {
+	log.Debug("Getting all events for server " + server + " at time " + strconv.FormatInt(epoch, 10))
 	var events []Event
 	dirPath := "data/servers/" + server + "/events/" // Find the directory we need
 
@@ -95,7 +97,7 @@ func GetServerEventsByTime(server string, time string) ([]Event, error) {
         	return events, err
     	}
     	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
-    	if e.Epoch == time { // If the event starts at the requested time
+    	if e.Epoch == epoch { // If the event starts at the requested time
     		events = append(events, e)
     	}
     }
