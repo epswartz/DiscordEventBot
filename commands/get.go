@@ -15,6 +15,8 @@ import(
 func Get(server string, args []string) (string, error) {
 	var blank db.Event
 
+	serverLocationString := "US/Eastern" // TODO get this from server settings.
+
 	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
 
 
@@ -66,9 +68,9 @@ func Get(server string, args []string) (string, error) {
 	        return "", err
 	    }
 	    t := time.Unix(e.Epoch, 0)
-	    loc, err := time.LoadLocation("EDT") // TODO Obviously that string changes per the server timezone
+	    loc, err := time.LoadLocation(serverLocationString) // TODO Obviously that string changes per the server timezone
 	    if err != nil {
-	    	return "", nil
+	    	return "", err
 	    }
 	    timeString = t.In(loc).Format(dateLayout)
 	} else {

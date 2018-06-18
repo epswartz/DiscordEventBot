@@ -131,6 +131,7 @@ func GetAllServerEvents(server string) ([]Event, error) {
     	json.Unmarshal(rawEvent, &e) // Stuff the unmarshalled data into e
     	events = append(events, e)
 	}
+
     return events, nil
 }
 

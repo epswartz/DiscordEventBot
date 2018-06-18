@@ -65,7 +65,6 @@ func Create(server string, sender string, args []string) (string, error) {
 
 
 	var t time.Time
-	var inputTime string
 	if len(args) == 2 {
 		// Find epoch.
 		t, err = time.ParseInLocation(dateCommandLayout, args[1], serverLocation) // TODO get actual timezone

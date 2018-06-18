@@ -7,8 +7,9 @@ import (
 
 // Lists events for this server.
 func List(server string) (string, error) {
-
 	// Currently it is impossible to have invalid args for list cmd.
+	serverLocationString := "US/Eastern" // TODO get this from server settings.
+
 
 	dateLayout := "Monday, January 2 2006 3:04 PM MST"
 	noDateSetString := "No time scheduled for this event."
@@ -20,16 +21,14 @@ func List(server string) (string, error) {
 	}
 
 	ret := ""
+
 	for _, e := range events {
 		var timeString string
 		if e.Epoch != -1 {
-		    if err != nil {
-		        return "", err
-		    }
 		    t := time.Unix(e.Epoch, 0)
-    	    loc, err := time.LoadLocation("EDT") // TODO Obviously that string changes per the server timezone
+    	    loc, err := time.LoadLocation(serverLocationString) // TODO Obviously that string changes per the server timezone
 		    if err != nil {
-		    	return "", nil
+		    	return "", err
 		    }
 		    timeString = t.In(loc).Format(dateLayout)
 		} else {
