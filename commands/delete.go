@@ -4,9 +4,9 @@ import(
 	"DiscordEventBot/db"
 	"DiscordEventBot/config"
 	"DiscordEventBot/session"
+	"DiscordEventBot/log"
 	"reflect"
 	"regexp"
-	"session"
 )
 
 // Deletes an event.
@@ -43,6 +43,9 @@ func Delete(server string, sender string, args []string) (string, error) {
 
 
 	memberInfo, err := session.Session.GuildMember(server, sender)
+	if err != nil {
+		return "", err
+	}
 	log.Error(memberInfo.Roles)
 
 	err = db.DeleteEvent(e)
