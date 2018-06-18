@@ -34,7 +34,7 @@ func Create(server string, sender string, args []string) (string, error) {
 		return usageString, nil
 	}
 	if !alphanum.MatchString(args[0]) || len(args[0]) > config.Cfg.MaxEventNameLength { // Check event name argument
-		return "**Error:** Invalid event name - event names are aplhanumeric and less than " + config.Cfg.MaxEventNameLength + " characters"
+		return "**Error:** Invalid event name - event names are aplhanumeric and less than " + strconv.Itoa(config.Cfg.MaxEventNameLength) + " characters", nil
 	}
 	if len(args) == 2 { // If there's a date, check that too
 		if !dateRegEx.MatchString(args[1]) {

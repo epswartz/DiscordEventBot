@@ -6,6 +6,7 @@ import(
 	"DiscordEventBot/config"
 	"strings"
 	"reflect"
+	"regexp"
 	"time"
 	"strconv"
 )
@@ -13,6 +14,9 @@ import(
 // Lists the people who have responded yes or no to an event.
 func Get(server string, args []string) (string, error) {
 	var blank db.Event
+
+	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
+
 
 	// Formatting string for printing dates.
 	dateLayout := "Monday, January 2 2006 3:04 PM MST"
@@ -30,6 +34,9 @@ func Get(server string, args []string) (string, error) {
 	}
 	if !argsValid(args) {
 		return usageString, nil
+	}
+	if !alphanum.MatchString(args[0]) || len(args[0]) > config.Cfg.MaxEventNameLength { // Check event name argument
+		return "**Error:** Invalid event name - event names are aplhanumeric and less than " + strconv.Itoa(config.Cfg.MaxEventNameLength) + " characters", nil
 	}
 
 	e, err := db.GetEventByName(server, args[0])

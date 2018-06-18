@@ -165,15 +165,12 @@ func WriteEvent(e Event) error {
 }
 
 
-// Delete an event
-func DeleteEvent(e Event) err {
+// Delete an event if it exists.
+// Standard use here is to  call GetEventByName, and then call delete, that's why it takes an event.
+func DeleteEvent(e Event) error {
 	log.Debug("Deleting event " + e.Name + " on server " + e.Server)
 	dirPath := "data/servers/" + e.Server + "/events/"
-	eJson, err := json.Marshal(e)
-	if err != nil {
-    	return err
-	}
-	err = ioutil.WriteFile(dirPath + e.Name + ".json", eJson, 0664)
+	err := os.Remove(dirPath + e.Name + ".json")
 	if err != nil {
 		return err
 	}
