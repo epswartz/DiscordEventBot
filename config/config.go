@@ -16,6 +16,7 @@ type Config struct {
 	Triggers []string // Slice of command triggers.
 	VerboseLogging bool // enable/disable debug log level
 	MaxEventNameLength	int // How long event names can be.
+	AdminRole string // Default name of the EventBot admin role
 }
 
 // in main.go, we pass a pointer to this to fill it up. then outside this package, we can get at it with config.Cfg once we import the package.

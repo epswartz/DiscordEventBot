@@ -3,8 +3,10 @@ package commands
 import(
 	"DiscordEventBot/db"
 	"DiscordEventBot/config"
+	"DiscordEventBot/session"
 	"reflect"
 	"regexp"
+	"session"
 )
 
 // Deletes an event.
@@ -29,8 +31,6 @@ func Delete(server string, sender string, args []string) (string, error) {
 		return "**Error:** Event not found", nil
 	}
 
-	// TODO admin check
-
 	e, err := db.GetEventByName(server, args[0])
 
 	if err != nil {
@@ -39,6 +39,12 @@ func Delete(server string, sender string, args []string) (string, error) {
 	if reflect.DeepEqual(e, blank) {
 		return "**Error:** Event `" + args[0] + "` not found", nil
 	}
+	// Before we delete the event we have to know that the person deleting it is allowed to. You have to either be an admin, or the event's creator.
+
+
+	memberInfo, err := session.Session.GuildMember(server, sender)
+	log.Error(memberInfo.Roles)
+
 	err = db.DeleteEvent(e)
 	if err != nil {
 		return "", err

@@ -99,6 +99,9 @@ func handleCommand(server string, sender string, tokens []string) string {
 // Main message handler. Called for every message that the bot sees, in any channel it has access to. returns the
 func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
+	// TODO Support fancier permissions where only people with X role can use the bot at all. This should be in server settings, checked here.
+	// TODO Possibly also support even finer level of control where each command has permissions linked to it - that seems like a bitch tho
+
 	// First thing we do is faff around in the disgordgo object hierarchy to get the server's ID
 	c, err := s.Channel(m.ChannelID)
 	if err != nil {
