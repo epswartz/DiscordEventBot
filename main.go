@@ -111,7 +111,8 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	server := c.GuildID
 
 	// Ignore all messages created by the bot itself, and ones that are DMs to the bot (that's what having empty string for server means)
-	if m.Author.ID == s.State.User.ID || server == "" {
+	// Blank content typically means image message but also happens with some integrations stuff I think
+	if m.Author.ID == s.State.User.ID || server == "" || m.Content == "" {
 		return
 	}
 
