@@ -80,6 +80,9 @@ func Get(server string, args []string) (string, error) {
 
 	if len(e.Roster) != 0 {
 		ret += "**Attendance Roster:**\n"
+		yes := ""
+		no := ""
+		maybe := ""
 
 		// TODO Do I want to do some sort of sorting here?
 		for _, user := range e.Roster { // For each user that has responded we print out the status in the roster.
@@ -88,13 +91,14 @@ func Get(server string, args []string) (string, error) {
 				return "", err
 			}
 			if user.Status == "yes" {
-				ret += ":white_check_mark:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
+				yes += ":white_check_mark:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
 			} else if user.Status == "no" {
-				ret += ":x:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
+				no += ":x:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
 			} else { // It's "maybe"
-				ret += ":question:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
+				maybe += ":question:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
 			}
 		}
+		ret += (yes + maybe + no) // Basically, sort them by putting the yes at the top, then maybe, then no
 	} else {
 		ret += "No **Attendance Roster** for this event, use `" + config.Cfg.Triggers[0] + " respond <yes/no> " + args[0] + "` to respond.\n"
 	}
