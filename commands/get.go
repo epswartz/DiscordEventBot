@@ -87,10 +87,12 @@ func Get(server string, args []string) (string, error) {
 			if err != nil{
 				return "", err
 			}
-			if(user.Status){
-				ret += ":white_check_mark:\t" + userData.Username + "#" + userData.Discriminator + "\n"
-			}else{
-				ret += ":x:\t" + userData.Username + "#" + userData.Discriminator + "\n"
+			if user.Status == "yes" {
+				ret += ":white_check_mark:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
+			} else if user.Status == "no" {
+				ret += ":x:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
+			} else { // It's "maybe"
+				ret += ":question:\t`" + userData.Username + "#" + userData.Discriminator + "`\n"
 			}
 		}
 	} else {

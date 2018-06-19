@@ -25,7 +25,7 @@ func Create(server string, sender string, args []string) (string, error) {
 	dateCommandLayout := "01/02/2006@15:04" // TODO Read the actual timezone for the server and concat it.
 	datePrintLayout := "Monday, January 2 2006 3:04 PM MST"
 
-	usageString := "**Usage:** `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]`" // TODO get the command trigger
+	usageString := "**Usage:** `!e create <event_name> [optional scheduled time (MM/DD/YYYY@HH:MM)]`\n Note: Event names are one word." // TODO get the command trigger
 	incorrectDateString := "**Error:** Incorrect Date format. Use `MM/DD/YYYY@HH:MM` with 24 hour time and include any leading 0s." // Needed a more intuive err for this one.
 
 	// Function for checking argument validity.

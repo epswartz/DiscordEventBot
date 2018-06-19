@@ -39,7 +39,7 @@ type Event struct {
 // A single user inside the Roster object.
 type EventUser struct {
 	Id string `json:"id"`
-	Status bool	`json:"status"`
+	Status string	`json:"status"`
 }
 
 // TODO complete below functions. Names should explain what they do.

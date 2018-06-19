@@ -79,9 +79,4 @@ func Delete(server string, sender string, args []string) (string, error) {
 		return "", err
 	}
 	return "Event `" + args[0] + "` deleted.", nil
-
-
-
-
-	return ":x: **This function not yet implemented.**", nil
 }
