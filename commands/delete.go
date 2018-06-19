@@ -4,10 +4,20 @@ import(
 	"DiscordEventBot/db"
 	"DiscordEventBot/config"
 	"DiscordEventBot/session"
-	"DiscordEventBot/log"
 	"reflect"
 	"regexp"
 )
+
+// contains method for slices of string.
+func contains(s []string, e string) bool {
+    for _, a := range s {
+        if a == e {
+            return true
+        }
+    }
+    return false
+}
+
 
 // Deletes an event.
 func Delete(server string, sender string, args []string) (string, error) {
@@ -39,14 +49,30 @@ func Delete(server string, sender string, args []string) (string, error) {
 	if reflect.DeepEqual(e, blank) {
 		return "**Error:** Event `" + args[0] + "` not found", nil
 	}
-	// Before we delete the event we have to know that the person deleting it is allowed to. You have to either be an admin, or the event's creator.
 
-
-	memberInfo, err := session.Session.GuildMember(server, sender)
-	if err != nil {
-		return "", err
+	// Before we delete the event we have to know that the person deleting it is allowed to.
+	// You have to either have the admin role, be the server owner, or be the event's creator.
+	// I do these checks in order by how fast they are, because we only have to do the others if the first ones fail, so we can spare a couple lookups sometimes.
+	if sender != e.Creator { // If you're the creator, we're done
+		guild, err := session.Session.Guild(server)
+		if err != nil {
+			return "", err
+		}
+		if sender != guild.OwnerID { // If you're the server owner, we're done
+			memberInfo, err := session.Session.GuildMember(server, sender)
+			if err != nil {
+				return "", err
+			}
+			for i := range guild.Roles { // Stack Overflow says if I just use the index it's faster because using the elements copies them. We'll try it.
+			    if guild.Roles[i].Name == config.Cfg.AdminRole { // TODO Get admin role name from server specific settings. This is just the default
+			    	// At this point i is the index of the admin role, so check if the command sender has that role.
+			    	if !contains(memberInfo.Roles, guild.Roles[i].ID) { // If you don't have the role, you can't delete it
+			    		return "**Error:** you do not have permission to delete event `" + args[0] + "`", nil
+			    	}
+			    }
+			}
+		}
 	}
-	log.Error(memberInfo.Roles)
 
 	err = db.DeleteEvent(e)
 	if err != nil {
