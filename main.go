@@ -105,8 +105,8 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// First thing we do is faff around in the disgordgo object hierarchy to get the server's ID
 	c, err := s.Channel(m.ChannelID)
 	if err != nil {
-		log.Critical("Error getting channel instance from message object: %s", err)
-		os.Exit(1)
+		log.Error("Error getting channel instance from message object: %s", err)
+		return
 	}
 	server := c.GuildID
 
@@ -143,17 +143,50 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 
 // TODO
-func checkEvents() {
-	// e := db.GetEventsByTime("166015498469769216", "2018-06-07@14:30")
+func checkEvents(time int64) {
 	log.Debug("Checking for events")
 
 	// Current time to the minute
-	//currentTime := time.Now().Truncate(time.Minute)
-	//dateString := currentTime.Format("2006-01-02@15:04")
 
-	// Form time string in the same syntax as the user puts it in
-	//dateString := currentTime.Year() + "-" + currentTime.Month() + "-" + currentTime.Day() + "@" + currentTime.Hour() + ":" + currentTime.Minute()
-	//log.Debug(dateString)
+
+	events, err := db.GetEventsByTime(epoch)
+
+	// If this doesn't work we are boned
+	if err != nil {
+		log.Error("Could not check events:\n" + err)
+		return
+	}
+
+
+
+	// Notice that this never runs if there are no events.
+	for i := range events {
+
+		var dmChannelIDs []string
+
+		// First add the creator
+		creatorChannel, err := session.Session.UserChannelCreate(events[i].Creator)
+		if err != nil {
+			log.Error("Could not get event creator DM Channel:\n" + err)
+			return
+		}
+		dmChannelIDs = append(dmChannelIDs, creatorChannel.ID)
+		for _, r := range events[i].Roster {
+			log.Info("Sending reminders for event: " + events[i].Name)
+			if (r.Status == "yes" || r.Status == "maybe") && r.Id != events[i].Creator {
+				dmChannel, err := session.Session.UserChannelCreate(r.Id)
+				if err != nil {
+					log.Error("Could not get event attendee DM Channel:\n" + err)
+					return
+				}
+				dmChannelIDs = append(dmChannelIDs, dmChannel.ID)
+			}
+		}
+
+		for ch := range dmChannelIDs {
+			session.Session.ChannelMessageSend(ch, "**Reminder:** Event `" + events[i].Name + "` begins at time")
+		}
+	}
 
 
 
@@ -166,7 +199,10 @@ func startEventNotifier() {
 	    nextTime := time.Now().Truncate(time.Minute)
 	    nextTime = nextTime.Add(time.Minute)
 	    time.Sleep(time.Until(nextTime))
-	    checkEvents()
+	    currentTime := time.Now().Truncate(time.Minute)
+		epoch := currentTime.Unix()
+	    checkEvents(epoch) // Look for events that start now
+	    checkEvents(epoch + 3600) // Look for events that start in an hour
 	}
 }
 
@@ -184,7 +220,7 @@ func main() {
 	log.Notice("EventBot attempting to start ...")
 	dg, err := session.New("Bot " + config.Cfg.Token) // dg is the DiscordGo object
 	if err != nil {                                 // Check for stinkies
-		log.Critical("Error initializing bot: ", err)
+		log.Critical("Error initializing bot:\n", err)
 		os.Exit(1)
 	}
 

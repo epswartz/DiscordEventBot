@@ -25,6 +25,5 @@ func Help(args []string) (string, error) {
 		return "No args.", nil
 	}
 
-
 	return ("Args recieved: " + strconv.Itoa(len(args)) + "\n" + strings.Join(args, " ")), nil
 }
