@@ -15,6 +15,7 @@ package main
 import (
 	"DiscordEventBot/commands"
 	"DiscordEventBot/log"
+	"DiscordEventBot/monitor"
 	"DiscordEventBot/config"
 	"DiscordEventBot/session"
 	"github.com/bwmarrin/discordgo"
@@ -23,7 +24,6 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 )
 
 // Returns error message for a bad command that the user tried to use
@@ -111,7 +111,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	server := c.GuildID
 
 	// Ignore all messages created by the bot itself, and ones that are DMs to the bot (that's what having empty string for server means)
-	// Blank content typically means image message but also happens with some integrations stuff I think
+	// Blank content typically means image message but also happens with some integrations stuff I think. We ignore those.
 	if m.Author.ID == s.State.User.ID || server == "" || m.Content == "" {
 		return
 	}
@@ -122,7 +122,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// First split the string by whitespace.
 	tokens := strings.Fields(content)
 
-	doCommand := false                        // For tracking whether we are doing anything with this message.
+	doCommand := false // For tracking whether we are doing anything as a result of this message.
 	for _, trigger := range config.Cfg.Triggers { // see if the first token is a command trigger, meaning that it's meant for the bot
 		if trigger == tokens[0] {
 			doCommand = true
@@ -134,76 +134,10 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// From here, we pass the remaining tokens to a command handler which sorts out what command (if any) they are, and executes.
-	// TODO add sender id to handleCommand call
 	s.ChannelMessageSend(m.ChannelID, handleCommand(server, m.Author.ID, tokens[1:len(tokens)]))
 
 	// TODO look for a command trigger (set in config file, defaults are "!event" and "!e")
 	// TODO if command trigger found, send to other functions based on a list of mappings from command name to handler.
-}
-
-
-// TODO
-func checkEvents(time int64) {
-	log.Debug("Checking for events")
-
-	// Current time to the minute
-
-
-	events, err := db.GetEventsByTime(epoch)
-
-	// If this doesn't work we are boned
-	if err != nil {
-		log.Error("Could not check events:\n" + err)
-		return
-	}
-
-
-
-	// Notice that this never runs if there are no events.
-	for i := range events {
-
-		var dmChannelIDs []string
-
-		// First add the creator
-		creatorChannel, err := session.Session.UserChannelCreate(events[i].Creator)
-		if err != nil {
-			log.Error("Could not get event creator DM Channel:\n" + err)
-			return
-		}
-		dmChannelIDs = append(dmChannelIDs, creatorChannel.ID)
-		for _, r := range events[i].Roster {
-			log.Info("Sending reminders for event: " + events[i].Name)
-			if (r.Status == "yes" || r.Status == "maybe") && r.Id != events[i].Creator {
-				dmChannel, err := session.Session.UserChannelCreate(r.Id)
-				if err != nil {
-					log.Error("Could not get event attendee DM Channel:\n" + err)
-					return
-				}
-				dmChannelIDs = append(dmChannelIDs, dmChannel.ID)
-			}
-		}
-
-		for ch := range dmChannelIDs {
-			session.Session.ChannelMessageSend(ch, "**Reminder:** Event `" + events[i].Name + "` begins at time")
-		}
-	}
-
-
-
-}
-
-// Starts up the event notifier. A function which fires every minute on the minute checking for events for which reminders and things need to be sent out.
-func startEventNotifier() {
-	log.Notice("EventBot notification watcher started")
-	for {
-	    nextTime := time.Now().Truncate(time.Minute)
-	    nextTime = nextTime.Add(time.Minute)
-	    time.Sleep(time.Until(nextTime))
-	    currentTime := time.Now().Truncate(time.Minute)
-		epoch := currentTime.Unix()
-	    checkEvents(epoch) // Look for events that start now
-	    checkEvents(epoch + 3600) // Look for events that start in an hour
-	}
 }
 
 func main() {
@@ -237,7 +171,7 @@ func main() {
 	log.Info("EventBot successfully connected to Discord")
 
 	// Start up the other part of the bot - the part that monitors for when events start and puts out reeminders
-	go startEventNotifier()
+	go monitor.StartEventNotifier()
 
 	// Wait here until CTRL-C or other term signal is received.
 	// Full disclosure I know nothing about channels as this is my first time using Go
