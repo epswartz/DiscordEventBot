@@ -11,7 +11,7 @@ The bot features some commands which are available to everyone, some commands wh
 
 `<>` means required parameters. For example `<event name>` could be `ethanbday`
 
-`[]` means optional parameters. For example `[optional scheduled time]` could be `05-30-2018@17:30`
+`[]` means optional parameters. For example `[optional scheduled time]` could be `05/30/2018@17:30`
 
 ## Commands Available to Everyone
 - `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]` - Create an event
@@ -31,6 +31,7 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event **Note: this feature is not yet finished**
 
 ## Other Features
+- Reminder when the event starts
 - Reminder 1 hour before the event starts
 
 # Using the Publicly Deployed Bot
@@ -38,8 +39,7 @@ The bot is not yet publicly deployed. When it is, I will keep a link here that y
 - Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. The actual server owner is also always considered an admin.
 
 # Deploying Your Own EventBot Instance
-`// TODO this section - talk about config file, DB setup (or lack thereof,if using local filesystem), etc`
-
+Haven't written this section yet. For now, just message @Exnur#0001 on discord.
 
 # Upcoming Development
 - Complete commands listed above as incomplete
