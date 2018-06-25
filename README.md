@@ -39,7 +39,12 @@ The bot features some commands which are available to everyone, some commands wh
 - Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. the actual server owner is also always considered an admin.
 
 # Deploying Your Own EventBot Instance
-`// TODO this section - talk about config file, DB setup (or lack thereof, if using local filesystem), etc`
+`// TODO this section - talk about config file, DB setup (or lack thereof,if using local filesystem), etc`
 
 
-`// TODO Add example usage for each command`
+# Upcoming Features
+- Use embeds for better formatting
+- Bot info command that shows a beautiful embed similar to [this one](https://cdn.discordapp.com/attachments/460847996431761428/460848388573888541/unknown.png)
+- Delete events some amount of time after they happen
+- SMS
+- Server specific settings
