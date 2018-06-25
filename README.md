@@ -1,11 +1,10 @@
 # DiscordEventBot
-![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `Current Status: Useless WIP`
+A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will send reminders about the event via discord DMs.
 
 - [Features](#features)
 - [Using the Publicly Deployed Bot](#using-the-publically-deployed-bot)
 - [Deploying Your Own EventBot Instance](#deploying-your-own-eventbot-instance)
-
-A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will post reminders about the event via discord, and via SMS if you have one registered with the bot.
+- [Upcoming Development](#upcoming-development)
 
 # Features
 The bot features some commands which are available to everyone, some commands which are available only to the event creator and the server admins, and some passive features which aren't commands at all (like reminders an hour before start).
@@ -42,7 +41,7 @@ The bot features some commands which are available to everyone, some commands wh
 `// TODO this section - talk about config file, DB setup (or lack thereof,if using local filesystem), etc`
 
 
-# Upcoming Features
+# Upcoming Development
 - Complete commands listed above as incomplete
 - Use embeds for better formatting
 - Bot info command that shows a beautiful embed similar to [this one](https://cdn.discordapp.com/attachments/460847996431761428/460848388573888541/unknown.png)
