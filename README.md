@@ -49,3 +49,4 @@ The bot features some commands which are available to everyone, some commands wh
 - SMS
 - Server specific settings
 - Delete multiple events in one go by passing more args
+- Auto-setup DB for new servers
