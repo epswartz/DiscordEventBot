@@ -1,29 +1,11 @@
+// Right now all this does is print a long ass string.
+
 package commands
 
-import (
-	"strings"
-	"strconv"
-)
-
-
+var helpString string = "`!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]` - Create an event\n`!e delete <event name>` - Delete an event\n`!e get <event name>` - Get info and attendance roster for an event\n`!e list` - List events on this server\n`!e respond <yes/no/maybe> <event name>` - Respond with your status for an event\n`!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection.\n`!e version` - Prints information on the bot's current version.\n"
 
 // Help gives help on the specific command given to it, or it can just print out all of them.
 func Help(args []string) (string, error) {
 
-	usageString := "**Usage:** `!e help [topic (optional)]`" // TODO get the command trigger
-
-	// Function for checking argument validity.
-	argsValid := func(args []string) bool {
-		// TODO There may eventually be some way for them to be invalid.
-		return true
-	}
-	if(!argsValid(args)){
-		return usageString, nil
-	}
-
-	if(len(args) == 0){
-		return "No args.", nil
-	}
-
-	return ("Args recieved: " + strconv.Itoa(len(args)) + "\n" + strings.Join(args, " ")), nil
+	return helpString, nil
 }

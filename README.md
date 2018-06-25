@@ -43,6 +43,7 @@ The bot features some commands which are available to everyone, some commands wh
 
 
 # Upcoming Features
+- Complete commands listed above as incomplete
 - Use embeds for better formatting
 - Bot info command that shows a beautiful embed similar to [this one](https://cdn.discordapp.com/attachments/460847996431761428/460848388573888541/unknown.png)
 - Delete events some amount of time after they happen
