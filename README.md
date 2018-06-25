@@ -34,8 +34,8 @@ The bot features some commands which are available to everyone, some commands wh
 - Reminder 1 hour before the event starts
 
 # Using the Publicly Deployed Bot
-`// TODO this section - talk about adding the public bot to servers and setting up the role`
-- Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. the actual server owner is also always considered an admin.
+The bot is not yet publicly deployed. When it is, I will keep a link here that you can use to add it to your server.
+- Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. The actual server owner is also always considered an admin.
 
 # Deploying Your Own EventBot Instance
 `// TODO this section - talk about config file, DB setup (or lack thereof,if using local filesystem), etc`
