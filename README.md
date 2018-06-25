@@ -2,7 +2,7 @@
 A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will send reminders about the event via discord DMs.
 
 - [Features](#features)
-- [Using the Publicly Deployed Bot](#using-the-publically-deployed-bot)
+- [Using the Publicly Deployed Bot](#using-the-publicly-deployed-bot)
 - [Deploying Your Own EventBot Instance](#deploying-your-own-eventbot-instance)
 - [Upcoming Development](#upcoming-development)
 
@@ -11,7 +11,7 @@ The bot features some commands which are available to everyone, some commands wh
 
 `<>` means required parameters. For example `<event name>` could be `ethanbday`
 
-`[]` means optional parameters. For example `[optional scheduled time]` could be `05-30-2018@17:30`
+`[]` means optional parameters. For example `[optional scheduled time]` could be `05/30/2018@17:30`
 
 ## Commands Available to Everyone
 - `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]` - Create an event
@@ -31,15 +31,15 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event **Note: this feature is not yet finished**
 
 ## Other Features
+- Reminder when the event starts
 - Reminder 1 hour before the event starts
 
 # Using the Publicly Deployed Bot
-`// TODO this section - talk about adding the public bot to servers and setting up the role`
-- Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. the actual server owner is also always considered an admin.
+The bot is not yet publicly deployed. When it is, I will keep a link here that you can use to add it to your server.
+- Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. The actual server owner is also always considered an admin.
 
 # Deploying Your Own EventBot Instance
-`// TODO this section - talk about config file, DB setup (or lack thereof,if using local filesystem), etc`
-
+Haven't written this section yet. For now, just message @Exnur#0001 on discord.
 
 # Upcoming Development
 - Complete commands listed above as incomplete
