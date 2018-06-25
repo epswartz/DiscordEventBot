@@ -36,5 +36,10 @@ func List(server string) (string, error) {
 		}
 		ret += "**" + e.Name + ":** `" + timeString + "`\n"
     }
+
+    if ret == "" {
+    	ret = "No events found for this server. Use `!e create` to create one."
+    }
+
 	return ret, nil
 }
