@@ -18,6 +18,7 @@ import (
 	"DiscordEventBot/monitor"
 	"DiscordEventBot/config"
 	"DiscordEventBot/session"
+	"DiscordEventBot/db"
 	"github.com/bwmarrin/discordgo"
 	"github.com/fatih/color"
 	"os"
@@ -140,6 +141,18 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// TODO if command trigger found, send to other functions based on a list of mappings from command name to handler.
 }
 
+// A bunch of these are fired when the bot starts, because it "sees" the guilds again.
+// This is also fired when a guild goes from unavailable to available from some outage.
+// The actual use here is when the bot is added to the server orignally.
+// This also handles the case where someone adds the bot user to their server while it's offline. When it comes back online, it will init their data.
+func handleGuildCreate(s *discordgo.Session, c *discordgo.GuildCreate) {
+	log.Debug("Discovered server:", c.ID)
+	err := db.InitServer(c.ID) // This will init the new server in the database, or will do nothing if it's already there.
+	if err != nil {
+		log.Error("Could not initialize guild: ")
+	}
+}
+
 func main() {
 
 	// All good programs start their log with some word art.
@@ -161,6 +174,7 @@ func main() {
 
 	// Register callback for MessageCreate events
 	dg.AddHandler(handleMessage)
+	dg.AddHandler(handleGuildCreate)
 
 	// Open a websocket connection to Discord and begin listening
 	err = dg.Open()

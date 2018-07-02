@@ -13,11 +13,9 @@
 
 ### Above here was generated automatically by GitHub, below is stuff I added. - Ethan
 
-# Config File for EventBot
+# Config Files for EventBot
 config.json
+prod-config.json
 
 # The data folder I use to store stuff data. Substituting for a proper database.
 data
-
-# Playground exmple thing
-ts.go

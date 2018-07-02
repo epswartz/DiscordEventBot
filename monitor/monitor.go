@@ -9,11 +9,12 @@ import(
 	"time"
 )
 
-func checkEvents(time int64) {
+// We pass the currentTime as well as the time we want to check for here.
+// This is to distinguish between situations where we say "Event begins now" vs. "Event begins in an hour".
+func checkEvents(searchTime int64, currentTime int64) {
 	log.Debug("Checking for events")
 
-	// Current time to the minute
-	events, err := db.GetEventsByTime(time)
+	events, err := db.GetEventsByTime(searchTime)
 
 	// If this doesn't work we are boned
 	if err != nil {
@@ -48,7 +49,7 @@ func checkEvents(time int64) {
 
 			var m string
 			// If it starts now, the message is different.
-			if time == events[i].Epoch {
+			if currentTime == events[i].Epoch {
 				m = "**Reminder:** Event `" + events[i].Name + "` has begun."
 			} else {
 				// TODO obviously if it isn't always an hour, this needs to change.
@@ -68,10 +69,10 @@ func StartEventNotifier() {
 	    time.Sleep(time.Until(nextTime))
 	    currentTime := time.Now().Truncate(time.Minute)
 		epoch := currentTime.Unix()
-	    checkEvents(epoch) // Look for events that start now
+	    checkEvents(epoch, epoch) // Look for events that start now
 
 	    // TODO should this always be an hour? Server specific setting? Event specific setting?
 	    // TODO if you change this, you need to show the starting date instead of just saying "in one hour"
-	    checkEvents(epoch + 3600) // Look for events that start in an hour
+	    checkEvents(epoch + 3600, epoch) // Look for events that start in an hour
 	}
 }

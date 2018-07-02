@@ -180,6 +180,21 @@ func DeleteEvent(e Event) error {
 	return nil
 }
 
+// Set up data needed when a server is first added. Does nothing if it already exists.
+func InitServer(server string) error {
+	dirPath := "data/servers/" + server
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) { // If true then path does not exist
+		err = os.MkdirAll(dirPath + "/events", os.ModePerm); // Create dirs
+		if err != nil {
+			return err
+		}
+		return nil
+	} else if err != nil { // Some other wacko err that doesn't mean it doesn't exist
+		return err
+	}
+	return nil
+}
+
 
 /*
 func GetSMS(server string, userid string) (SMSUser, error) {
