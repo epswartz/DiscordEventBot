@@ -14,17 +14,18 @@ package main
 
 import (
 	"DiscordEventBot/commands"
+	"DiscordEventBot/config"
+	"DiscordEventBot/db"
 	"DiscordEventBot/log"
 	"DiscordEventBot/monitor"
-	"DiscordEventBot/config"
 	"DiscordEventBot/session"
-	"DiscordEventBot/db"
-	"github.com/bwmarrin/discordgo"
-	"github.com/fatih/color"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/bwmarrin/discordgo"
+	"github.com/fatih/color"
 )
 
 // Returns error message for a bad command that the user tried to use
@@ -47,9 +48,9 @@ func handleCommand(server string, sender string, tokens []string) string {
 	// If there's no command, just print the help.
 	if len(tokens) == 0 {
 		msg, err = commands.Help(nil)
-		if(err == nil){
+		if err == nil {
 			return msg
-		}else{
+		} else {
 			return handleError(err)
 		}
 	}
@@ -90,9 +91,9 @@ func handleCommand(server string, sender string, tokens []string) string {
 		return invalidCommand(tokens[0]) // Print err message if command not defined
 	}
 
-	if(err == nil){
+	if err == nil {
 		return msg
-	}else{
+	} else {
 		return handleError(err)
 	}
 }
@@ -123,7 +124,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// First split the string by whitespace.
 	tokens := strings.Fields(content)
 
-	doCommand := false // For tracking whether we are doing anything as a result of this message.
+	doCommand := false                            // For tracking whether we are doing anything as a result of this message.
 	for _, trigger := range config.Cfg.Triggers { // see if the first token is a command trigger, meaning that it's meant for the bot
 		if trigger == tokens[0] {
 			doCommand = true
@@ -166,11 +167,10 @@ func main() {
 	// Start Bot
 	log.Notice("EventBot attempting to start ...")
 	dg, err := session.New("Bot " + config.Cfg.Token) // dg is the DiscordGo object
-	if err != nil {                                 // Check for stinkies
+	if err != nil {                                   // Check for stinkies
 		log.Critical("Error initializing bot:\n", err)
 		os.Exit(1)
 	}
-
 
 	// Register callback for MessageCreate events
 	dg.AddHandler(handleMessage)
