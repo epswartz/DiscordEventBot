@@ -42,6 +42,8 @@ The bot is not yet publicly deployed. When it is, I will keep a link here that y
 Haven't written this section yet. For now, just message @Exnur#0001 on discord.
 
 # Upcoming Development
+- Refactor some arg checking into a utils package
+- Bar creation of events at times which already passed
 - Complete commands listed above as incomplete
 - Use embeds for better formatting
 - Bot info command that shows a beautiful embed similar to [this one](https://cdn.discordapp.com/attachments/460847996431761428/460848388573888541/unknown.png)
