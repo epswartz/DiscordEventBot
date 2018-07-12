@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Sets and/or changes the time for an event to the time given.
@@ -14,6 +15,10 @@ func Time(server string, sender string, args []string) (string, error) {
 	var blank db.Event
 
 	serverLocationString := "US/Eastern" // TODO get this from server settings.
+	serverLocation, err := time.LoadLocation(serverLocationString)
+	if err != nil {
+		return "", err
+	}
 
 	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
 	dateRegEx := regexp.MustCompile("^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]@[0-9][0-9]:[0-9][0-9]$")
@@ -27,7 +32,7 @@ func Time(server string, sender string, args []string) (string, error) {
 
 	// Function for checking argument validity.
 	argsValid := func(args []string) bool {
-		if len(args) != 1 || strings.ContainsAny(args[0], "/\\") { // can't have more than one arg or any linux filename reserved chars.
+		if len(args) != 2 || strings.ContainsAny(args[0], "/\\") { // can't have more than one arg or any linux filename reserved chars.
 			return false
 		}
 		return true
@@ -37,6 +42,9 @@ func Time(server string, sender string, args []string) (string, error) {
 	}
 	if !alphanum.MatchString(args[0]) || len(args[0]) > config.Cfg.MaxEventNameLength { // Check event name argument
 		return "**Error:** Invalid event name - event names are aplhanumeric and less than " + strconv.Itoa(config.Cfg.MaxEventNameLength) + " characters", nil
+	}
+	if !dateRegEx.MatchString(args[1]) { // Check the date.
+		return incorrectDateString, nil
 	}
 
 	e, err := db.GetEventByName(server, args[0])
@@ -49,5 +57,18 @@ func Time(server string, sender string, args []string) (string, error) {
 		return "**Error:** Event `" + args[0] + "` not found", nil
 	}
 
-	return ":x: **This function not yet implemented.**", nil
+	var t time.Time
+	// Find epoch time.
+	t, err = time.ParseInLocation(dateCommandLayout, args[1], serverLocation) // TODO get actual timezone
+	epoch := t.Unix()
+	// epoch += 18000 // TODO this number depends on the server timezone. This is for EST.
+	e.Epoch = epoch // Right here is where we actually change the time. :)
+
+	err = db.WriteEvent(e)
+
+	if err != nil {
+		return "", err
+	}
+
+	return "Time for event `" + args[0] + "` changed to `" + t.Format(datePrintLayout) + "`", nil
 }
