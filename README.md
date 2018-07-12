@@ -28,7 +28,7 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e delete <event name>` - Delete an event
 - `!e remind <event name>` - Send a reminder for an event (in addition to the auto-reminder 1 hr before) **Note: this feature is not yet finished**
 - `!e settings [setting] [optional value]` - Get or Set some setting for the current server. just plain old `!e settings` shows them all. **Note: this feature is not yet finished**
-- `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event **Note: this feature is not yet finished**
+- `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event
 
 ## Other Features
 - Reminder when the event starts
