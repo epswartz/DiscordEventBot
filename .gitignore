@@ -17,7 +17,7 @@
 config.json
 prod-config.json
 
-# The data folder I use to store stuff data. Substituting for a proper database.
+# The data folder I use to store stuff. Substituting for a proper database.
 data
 
 # Mac OS Garbage
