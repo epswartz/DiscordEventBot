@@ -1,20 +1,20 @@
 package commands
 
-import(
+import (
+	"DiscordEventBot/config"
 	"DiscordEventBot/db"
 	"DiscordEventBot/session"
-	"DiscordEventBot/config"
 	"reflect"
 	"regexp"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 // Responds that you either are or are not going to an event.
 func Respond(server string, sender string, args []string) (string, error) {
-	var blank db.Event // Blank event for checking
+	var blank db.Event                                                   // Blank event for checking
 	usageString := "**Usage:** `!e respond <yes/no/maybe> <event name>`" // TODO get the command trigger
-	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
+	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$")                    // RegEx for checking if event name is alphanumeric w/ underscores
 
 	// Function for checking argument validity.
 	argsValid := func(args []string) bool {

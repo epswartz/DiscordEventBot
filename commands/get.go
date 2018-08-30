@@ -1,14 +1,14 @@
 package commands
 
-import(
+import (
+	"DiscordEventBot/config"
 	"DiscordEventBot/db"
 	"DiscordEventBot/session"
-	"DiscordEventBot/config"
-	"strings"
 	"reflect"
 	"regexp"
-	"time"
 	"strconv"
+	"strings"
+	"time"
 )
 
 // Lists the people who have responded yes or no to an event.
@@ -19,7 +19,6 @@ func Get(server string, args []string) (string, error) {
 
 	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
 
-
 	// Formatting string for printing dates.
 	dateLayout := "Monday, January 2 2006 3:04 PM MST"
 
@@ -29,7 +28,7 @@ func Get(server string, args []string) (string, error) {
 
 	// Function for checking argument validity.
 	argsValid := func(args []string) bool {
-		if(len(args) != 1 || strings.ContainsAny(args[0], "/\\")){ // can't have more than one arg or any linux filename reserved chars.
+		if len(args) != 1 || strings.ContainsAny(args[0], "/\\") { // can't have more than one arg or any linux filename reserved chars.
 			return false
 		}
 		return true
@@ -54,7 +53,7 @@ func Get(server string, args []string) (string, error) {
 
 	// Get current data for crator so that we can print their current username
 	creatorData, err := session.Session.User(e.Creator) // We need to get the user's current username (usernames change on Discord, but IDs dont)
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 
@@ -64,15 +63,15 @@ func Get(server string, args []string) (string, error) {
 	// Parse the time
 	var timeString string
 	if e.Epoch != -1 {
-	    if err != nil {
-	        return "", err
-	    }
-	    t := time.Unix(e.Epoch, 0)
-	    loc, err := time.LoadLocation(serverLocationString) // TODO Obviously that string changes per the server timezone
-	    if err != nil {
-	    	return "", err
-	    }
-	    timeString = t.In(loc).Format(dateLayout)
+		if err != nil {
+			return "", err
+		}
+		t := time.Unix(e.Epoch, 0)
+		loc, err := time.LoadLocation(serverLocationString) // TODO Obviously that string changes per the server timezone
+		if err != nil {
+			return "", err
+		}
+		timeString = t.In(loc).Format(dateLayout)
 	} else {
 		timeString = noDateSetString
 	}
@@ -87,7 +86,7 @@ func Get(server string, args []string) (string, error) {
 		// TODO Do I want to do some sort of sorting here?
 		for _, user := range e.Roster { // For each user that has responded we print out the status in the roster.
 			userData, err := session.Session.User(user.Id) // We need to get the user's current username (usernames change on Discord, but IDs dont)
-			if err != nil{
+			if err != nil {
 				return "", err
 			}
 			if user.Status == "yes" {

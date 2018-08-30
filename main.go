@@ -35,7 +35,7 @@ func invalidCommand(badCmd string) string {
 
 func handleError(e error) string {
 	log.Error(e)
-	return "Internal Error. Check log or contact `@Exnur#0001` for assistance."
+	return "Internal Error. Contact `@Exnur#0001` for assistance."
 }
 
 // Command handler. Once we get in here, we know that the message started with the command trigger, and we have the remaining tokens.
@@ -57,7 +57,7 @@ func handleCommand(server string, sender string, tokens []string) string {
 
 	log.Info("Attempting Command: " + tokens[0] + "\n\t issuer: " + sender + "\n\t server: " + server)
 
-	args := tokens[1:len(tokens)] // Remaining tokens. Command will get these. Guaranteed not empty by my previous if statement.
+	args := tokens[1:] // Remaining tokens. Command will get these. Guaranteed not empty by my previous if statement.
 
 	// Now we go through our list of commands. when we find it, pass the rest of the tokens as the command's args, and if needed, the sender.
 	// Try to keep this in alphabetical order - it'll help
@@ -136,7 +136,7 @@ func handleMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// From here, we pass the remaining tokens to a command handler which sorts out what command (if any) they are, and executes.
-	s.ChannelMessageSend(m.ChannelID, handleCommand(server, m.Author.ID, tokens[1:len(tokens)]))
+	s.ChannelMessageSend(m.ChannelID, handleCommand(server, m.Author.ID, tokens[1:]))
 
 	// TODO look for a command trigger (set in config file, defaults are "!event" and "!e")
 	// TODO if command trigger found, send to other functions based on a list of mappings from command name to handler.

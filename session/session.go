@@ -3,7 +3,7 @@
 
 package session
 
-import(
+import (
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -11,12 +11,11 @@ import(
 var Session *discordgo.Session
 
 // An alias for discordgo.New which saves what we get back.
-func New(initString string) (*discordgo.Session, error){
+func New(initString string) (*discordgo.Session, error) {
 	var err error
 	Session, err = discordgo.New(initString)
-	if(err != nil){
+	if err != nil {
 		return Session, err
 	}
 	return Session, nil
 }
-

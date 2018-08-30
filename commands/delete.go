@@ -1,29 +1,18 @@
 package commands
 
-import(
-	"DiscordEventBot/db"
+import (
 	"DiscordEventBot/config"
+	"DiscordEventBot/db"
 	"DiscordEventBot/session"
 	"reflect"
 	"regexp"
 )
 
-// contains method for slices of string.
-func contains(s []string, e string) bool {
-    for _, a := range s {
-        if a == e {
-            return true
-        }
-    }
-    return false
-}
-
-
 // Deletes an event.
 func Delete(server string, sender string, args []string) (string, error) {
 	var blank db.Event // For checking whether the event already exists. If not, the returned event will match this new one.
 
-	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$") // RegEx for checking if event name is alphanumeric w/ underscores
+	alphanum := regexp.MustCompile("^[a-zA-Z0-9_]*$")    // RegEx for checking if event name is alphanumeric w/ underscores
 	usageString := "**Usage:** `!e delete <event name>`" // TODO get the command trigger
 
 	// TODO check if args is nil
@@ -64,12 +53,12 @@ func Delete(server string, sender string, args []string) (string, error) {
 				return "", err
 			}
 			for i := range guild.Roles { // Stack Overflow says if I just use the index it's faster because using the elements copies them. We'll try it.
-			    if guild.Roles[i].Name == config.Cfg.AdminRole { // TODO Get admin role name from server specific settings. This is just the default
-			    	// At this point i is the index of the admin role, so check if the command sender has that role.
-			    	if !contains(memberInfo.Roles, guild.Roles[i].ID) { // If you don't have the role, you can't delete it
-			    		return "**Error:** you do not have permission to delete event `" + args[0] + "`", nil
-			    	}
-			    }
+				if guild.Roles[i].Name == config.Cfg.AdminRole { // TODO Get admin role name from server specific settings. This is just the default
+					// At this point i is the index of the admin role, so check if the command sender has that role.
+					if !contains(memberInfo.Roles, guild.Roles[i].ID) { // If you don't have the role, you can't delete it
+						return "**Error:** you do not have permission to delete event `" + args[0] + "`", nil
+					}
+				}
 			}
 		}
 	}

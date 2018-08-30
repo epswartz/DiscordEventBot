@@ -1,21 +1,17 @@
 package commands
 
-import(
-)
-
 // Turns SMS notifications on or off for a user.
 func Sms(server string, sender string, args []string) (string, error) {
-
 
 	usageString := "**Usage:** `!e sms <on/off>`\nUse `!e help sms` for more information."
 
 	// Function for checking argument validity.
 	argsValid := func(args []string) bool {
 		// This cmd needs exactly 1 arg.
-		if(len(args) != 1){
+		if len(args) != 1 {
 			return false
 		}
-		if(args[0] != "on" && args[0] != "off"){
+		if args[0] != "on" && args[0] != "off" {
 			return false
 		}
 		return true
