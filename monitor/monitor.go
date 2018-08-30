@@ -2,7 +2,7 @@
 
 package monitor
 
-import(
+import (
 	"DiscordEventBot/db"
 	"DiscordEventBot/log"
 	"DiscordEventBot/session"
@@ -43,7 +43,7 @@ func checkEvents(searchTime int64, currentTime int64) {
 				dmChannelIDs = append(dmChannelIDs, dmChannel.ID)
 			}
 		}
-			log.Info("Sending", len(dmChannelIDs), "reminder(s) for event:", events[i].Name)
+		log.Info("Sending", len(dmChannelIDs), "reminder(s) for event:", events[i].Name)
 
 		for _, ch := range dmChannelIDs {
 
@@ -64,15 +64,15 @@ func checkEvents(searchTime int64, currentTime int64) {
 func StartEventNotifier() {
 	log.Notice("EventBot notification watcher started")
 	for {
-	    nextTime := time.Now().Truncate(time.Minute)
-	    nextTime = nextTime.Add(time.Minute)
-	    time.Sleep(time.Until(nextTime))
-	    currentTime := time.Now().Truncate(time.Minute)
+		nextTime := time.Now().Truncate(time.Minute)
+		nextTime = nextTime.Add(time.Minute)
+		time.Sleep(time.Until(nextTime))
+		currentTime := time.Now().Truncate(time.Minute)
 		epoch := currentTime.Unix()
-	    checkEvents(epoch, epoch) // Look for events that start now
+		checkEvents(epoch, epoch) // Look for events that start now
 
-	    // TODO should this always be an hour? Server specific setting? Event specific setting?
-	    // TODO if you change this, you need to show the starting date instead of just saying "in one hour"
-	    checkEvents(epoch + 3600, epoch) // Look for events that start in an hour
+		// TODO should this always be an hour? Server specific setting? Event specific setting?
+		// TODO if you change this, you need to show the starting date instead of just saying "in one hour"
+		checkEvents(epoch+3600, epoch) // Look for events that start in an hour
 	}
 }
