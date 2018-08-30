@@ -1,4 +1,4 @@
-# DiscordEventBot 1.1.0-beta
+# DiscordEventBot 1.0.0
 A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will send reminders about the event via discord DMs.
 
 - [Features](#features)
@@ -16,12 +16,12 @@ The bot features some commands which are available to everyone, some commands wh
 ## Commands Available to Everyone
 - `!e create <event name> [optional scheduled time (MM/DD/YYYY@HH:MM)]` - Create an event
 - `!e get <event name>` - Get info and attendance roster for an event
-- `!e help` - Get link to instructions to use bot **Note: this feature is not yet finished**
+- `!e help` - Get link to instructions to use bot
 - `!e list` - List events on this server
 - `!e mention <event name>` - Tag everyone who is in the event's attendance roster as a yes or maybe. **Note: this feature is not yet finished**
 - `!e respond <yes/no/maybe> <event name>` - Respond with your status for an event
-- `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires it having your number in general) **Note: this feature is not yet finished**
-- `!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection.
+- `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires user having signed up and given the bot their number) **Note: this feature is not yet finished**
+- `!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection if applicable.
 - `!e version` - Prints information on the bot's current version.
 
 ## Commands Available to Event Creators and Server Admins
@@ -42,6 +42,12 @@ The bot is not yet publicly deployed. When it is, I will keep a link here that y
 Haven't written this section yet. For now, just message @Exnur#0001 on discord.
 
 # Upcoming Development
+- Rename events
+- Server specific settings
+  - MessageAdminOnRSVP
+  - PrintListOnRSVP
+  - AdminRole
+- Change people's status to maybe if the event time changes
 - Refactor some arg checking into a utils package
 - Bar creation of events at times which already passed
 - Complete commands listed above as incomplete
@@ -49,6 +55,5 @@ Haven't written this section yet. For now, just message @Exnur#0001 on discord.
 - Bot info command that shows a beautiful embed similar to [this one](https://cdn.discordapp.com/attachments/460847996431761428/460848388573888541/unknown.png)
 - Delete events some amount of time after they happen
 - SMS
-- Server specific settings
 - Delete multiple events in one go by passing more args
 - Auto-setup DB for new servers
