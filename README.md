@@ -27,7 +27,7 @@ The bot features some commands which are available to everyone, some commands wh
 ## Commands Available to Event Creators and Server Admins
 - `!e delete <event name>` - Delete an event
 - `!e remind <event name>` - Send a reminder for an event (in addition to the auto-reminder 1 hr before) **Note: this feature is not yet finished**
-- `!e settings [setting] [optional value]` - Get or Set some setting for the current server. Just plain old `!e settings` shows them all. **Note: this feature is not yet finished**
+- `!e settings [setting] [optional value]` - Get or Set some setting for the current server. Just plain old `!e settings` shows them all.
 - `!e time <event name> <time (MM/DD/YYYY@HH:MM)>` - Schedule (or reschedule) a time for an event
 
 ## Other Features
@@ -43,12 +43,7 @@ Haven't written this section yet. For now, just message @Exnur#0001 on discord.
 
 # Upcoming Development
 - Rename events
-- Server specific settings
-  - MessageAdminOnRSVP
-  - PrintListOnRSVP
-  - AdminRole
 - Change people's status to maybe if the event time changes
-- Refactor some arg checking into a utils package
 - Bar creation of events at times which already passed
 - Complete commands listed above as incomplete
 - Use embeds for better formatting

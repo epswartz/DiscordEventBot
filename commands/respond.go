@@ -61,6 +61,8 @@ func Respond(server string, sender string, args []string) (string, error) {
 		return "", err
 	}
 
+	adminChannels, err := session.GetAdminChannels(server)
+
 	// Need username for the output
 	userData, err := session.Session.User(sender)
 

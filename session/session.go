@@ -19,3 +19,9 @@ func New(initString string) (*discordgo.Session, error) {
 	}
 	return Session, nil
 }
+
+/*
+func GetAdminChannels(server string) []{
+
+}
+*/
