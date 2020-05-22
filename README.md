@@ -20,7 +20,7 @@ The bot features some commands which are available to everyone, some commands wh
 - `!e list` - List events on this server
 - `!e mention <event name>` - Tag everyone who is in the event's attendance roster as a yes or maybe. **Note: this feature is not yet finished**
 - `!e respond <yes/no/maybe> <event name>` - Respond with your status for an event
-- `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires it having your number in general) **Note: this feature is not yet finished**
+- `!e sms <on/off>` - Subscribe/Unsubscribe from SMS reminders (also requires the bot already having your number) **Note: this feature is not yet finished**
 - `!e status` - Prints a string indicating that the bot is alive, and prints the status of the bot's database connection.
 - `!e version` - Prints information on the bot's current version.
 
