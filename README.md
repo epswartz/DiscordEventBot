@@ -1,5 +1,5 @@
 # DiscordEventBot 1.1.0-beta
-A bot for scheduling and handling events on a discord server. Will allow people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and will send reminders about the event via discord DMs.
+A bot for scheduling and handling events on a discord server. Allows people to manage (create, update, delete, etc) events, post their status, query for details of the event later, and sends reminders about the event via discord DMs.
 
 - [Features](#features)
 - [Using the Publicly Deployed Bot](#using-the-publicly-deployed-bot)
