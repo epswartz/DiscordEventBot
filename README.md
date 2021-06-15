@@ -39,7 +39,7 @@ The bot is not yet publicly deployed. When it is, I will keep a link here that y
 - Admins are determined by the role "EventBotAdmin" - create a role with this name and give it to users if you want them to be able to use the admin commands. The actual server owner is also always considered an admin.
 
 # Deploying Your Own EventBot Instance
-Haven't written this section yet. For now, just leave an issue here if you want to do this.
+See https://github.com/epswartz/DiscordEventBot/issues/3
 
 # Upcoming Development
 - Refactor some arg checking into a utils package
